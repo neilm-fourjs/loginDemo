@@ -1,0 +1,10 @@
+<Secure>
+	<email>
+		<user>me@test.com</user>
+		<password>ThisIsMyPassword</password>
+	</email>
+	<sms>
+		<user>me</user>
+		<password>ThisIsMyPassword</password>
+	</sms>
+</Secure>

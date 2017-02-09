@@ -1,0 +1,58 @@
+
+#+ Login Form - used by lib_login
+
+LAYOUT (TEXT=%"Login",WINDOWSTYLE="login", IMAGE="fa-lock")
+GRID -- ( STYLE="login" )
+{
+<G grp1                                           >
+[titl                                          |c]
+[""]
+["  "][l001                    ]
+["  "][f001                    ]
+["  "][l002                    ]
+["  "][f002                    ]
+[""]
+[ :accept:forgotten:            :newacc        : ]
+<                                                 >
+[""]
+<G grp2                                           >
+["  "][l003                    ]
+["  "][f003                    ]
+["  "][l004                    ]
+["  "][f004                    ]
+[l_rules                                         ]
+[                                                ]
+[                                                ]
+[                                                ]
+[                                                ]
+[                                                ]
+[                                                ]
+<                                                 >
+}
+END -- GRID
+
+ATTRIBUTES
+GROUP grp1 : grp1, GRIDCHILDRENINPARENT;
+
+--GROUP grp2 : grp2, GRIDCHILDRENINPARENT;
+LABEL titl : titl,TEXT=%"Welcome",JUSTIFY=CENTER,STYLE="titl";
+
+LABEL l001 : lemail,TEXT=%"Email:",COMMENT=%"Your Email address", STYLE="bold";
+LABEL l002 : lpassw,TEXT=%"Password:", STYLE="bold";
+
+f001 = FORMONLY.l_login, NOT NULL,COMMENT=%"Your Email address", REQUIRED;
+f002 = FORMONLY.l_pass, INVISIBLE, REQUIRED, NOT NULL;
+
+
+GROUP grp2 : grp2, GRIDCHILDRENINPARENT,TEXT=%"Password Change:",HIDDEN;
+
+LABEL l003 : lpassw1,TEXT=%"New Password:", STYLE="bold";
+LABEL l004 : lpassw2,TEXT=%"Confirm Password:", STYLE="bold";
+f003 = FORMONLY.l_pass1, INVISIBLE, REQUIRED, NOT NULL;
+f004 = FORMONLY.l_pass2, INVISIBLE, REQUIRED, NOT NULL;
+TEXTEDIT l_rules = FORMONLY.l_rules, SCROLLBARS=NONE,STRETCH=BOTH,STYLE="small";
+
+BUTTON c : cancel, TEXT="",STYLE="small login",IMAGE="fa-times-circle";
+BUTTON accept : accept, TEXT=%"Login",IMAGE="fa-user", STYLE="login";
+BUTTON newacc : acct_new, TEXT=%"Create New Account", STYLE="login";
+BUTTON forgotten : forgotten, TEXT=%"Reset Password?", IMAGE="fa-question-circle", STYLE="login";

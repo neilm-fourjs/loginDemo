@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<APPLICATION Parent="defaultgdc"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="http://www.4js.com/ns/gas/3.00/cfextwa.xsd">
+  <RESOURCE Id="res.path.myhome" Source="INTERNAL">/home/neilm/all/njms_demos</RESOURCE>
+  <RESOURCE Id="res.path.logindemo" Source="INTERNAL">$(res.path.myhome)/login_example</RESOURCE>
+  <EXECUTION>
+    <ENVIRONMENT_VARIABLE Id="FGLRESOURCEPATH">$(res.path.logindemo)/etc</ENVIRONMENT_VARIABLE>
+    <ENVIRONMENT_VARIABLE Id="FGLLDPATH">$(res.gre)/lib</ENVIRONMENT_VARIABLE>
+    <ENVIRONMENT_VARIABLE Id="DBDATE">DMY4/</ENVIRONMENT_VARIABLE>
+    <ENVIRONMENT_VARIABLE Id="DBNAME">logindemo</ENVIRONMENT_VARIABLE>
+    <PATH>$(res.path.logindemo)/bin</PATH>
+    <MODULE>loginDemo.42r</MODULE>
+  </EXECUTION>
+</APPLICATION>

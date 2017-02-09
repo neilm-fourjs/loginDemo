@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<xenc:EncryptedData xmlns:xenc="http://www.w3.org/2001/04/xmlenc#" Type="http://www.w3.org/2001/04/xmlenc#Element">
+  <xenc:EncryptionMethod Algorithm="http://www.w3.org/2001/04/xmlenc#aes256-cbc"/>
+  <dsig:KeyInfo xmlns:dsig="http://www.w3.org/2000/09/xmldsig#">
+    <dsig:KeyName>MySecretKey</dsig:KeyName>
+  </dsig:KeyInfo>
+  <xenc:CipherData>
+    <xenc:CipherValue>YB2PBhFcr9bbpo1VayKPa8eNt39aRobxC5DJ/eS2u6vAESdidv12eI4bc+NwZLL0vdzH7/FOpaRhPdFRUx4ZV6cv2UaAR8DnFlUe64KhOx+2zTU/qDOZhFOsmWAqC9/xcfzicE4G3sRzhu2zc0PZJX9fwi89FLh0EgcuxZzfpoSJgkrk4JhKsEW17bQEOdveYo4D/l0q8P4bvFiM7zNX/IV7LTTgdGsU+mbkFmXoLoE=</xenc:CipherValue>
+  </xenc:CipherData>
+</xenc:EncryptedData>

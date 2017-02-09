@@ -1,0 +1,79 @@
+
+#+ New account form
+
+&include "schema.inc"
+
+TOOLBAR
+	ITEM accept
+	ITEM cancel
+END -- Toolbar
+
+LAYOUT ( TEXT="Your Details", WINDOWSTYLE="main2", IMAGE="fa-user" )
+GRID
+{
+[acct_id   |r1|f001        ]  [r                                  ]
+[email     |r6|f007                                               ]
+[salutation|r2|f003        ]  
+[forenames |r3|f004                                               ]
+[surname   |r4|f005                              ]
+[position  |r5|f006                                               ]
+[comment   |r7|f008                                               ]
+              [                                                   ]
+[user_type |r8|f009        ]
+[active    |ra|a]
+[forcepwch |rd|b]
+[""]
+[passwd    |rp|p001                              ]
+[passexp   |pe|p002             ]
+}
+END -- GRID
+END -- LAYOUT
+
+TABLES
+accounts
+
+ATTRIBUTES
+LABEL r  : r , TEXT="( * = Required )",STYLE="required",JUSTIFY=CENTER;
+LABEL r1 : r1, TEXT="",STYLE="required",HIDDEN;
+LABEL r2 : r2, TEXT="",STYLE="required",HIDDEN;
+LABEL r3 : r3, TEXT="*",STYLE="required";
+LABEL r4 : r4, TEXT="*",STYLE="required";
+LABEL r5 : r5, TEXT="",STYLE="required";
+LABEL r6 : r6, TEXT="*",STYLE="required";
+LABEL r7 : r7, TEXT="",STYLE="required";
+LABEL r8 : r8, TEXT="*",STYLE="required";
+LABEL ra : ra, TEXT="",STYLE="required";
+LABEL rd : rd, TEXT="",STYLE="required";
+LABEL rp : rp, TEXT="*",STYLE="required";
+LABEL pe : pe, TEXT="*",STYLE="required";
+
+LABEL acct_id    : lc, TEXT=%"Account Id:",JUSTIFY=RIGHT;
+LABEL email			 : em, TEXT=%"Email:",JUSTIFY=RIGHT;
+LABEL salutation : sl, TEXT=%"Saluation:",JUSTIFY=RIGHT;
+LABEL forenames	 : fn, TEXT=%"First Name:",JUSTIFY=RIGHT;
+LABEL surname		 : sn, TEXT=%"Last Name:",JUSTIFY=RIGHT;
+LABEL position	 : ps, TEXT=%"Job Title:",JUSTIFY=RIGHT;
+LABEL comment		 : cm, TEXT=%"Comment:",JUSTIFY=RIGHT;
+LABEL user_type	 : ut, TEXT=%"User Type:",JUSTIFY=RIGHT;
+LABEL active		 : ac, TEXT=%"Active:",JUSTIFY=RIGHT;
+LABEL forcepwch  : fp, TEXT=%"Force Pass Change:",JUSTIFY=RIGHT;
+LABEL passwd     : pw, TEXT=%"Password:", JUSTIFY=RIGHT;
+LABEL passexp    : pe, TEXT=%"Password Expires:",JUSTIFY=RIGHT;
+
+f001 = accounts.acct_id, DEFAULT=0;
+f007 = accounts.email, NOT NULL, REQUIRED, TABINDEX=1;
+f003 = accounts.salutation, TABINDEX=2;
+f004 = accounts.forenames, NOT NULL, REQUIRED, TABINDEX=3;
+f005 = accounts.surname, NOT NULL, REQUIRED, TABINDEX=4;
+f006 = accounts.position, TABINDEX=5;
+TEXTEDIT f008 = accounts.comment, TABINDEX=6;
+COMBOBOX f009 = accounts.acct_type,INITIALIZER=pop_combo,DEFAULT=1,NOT NULL, TABINDEX=7;
+CHECKBOX a = accounts.active,VALUECHECKED=1,VALUEUNCHECKED=0,DEFAULT=1,NOT NULL;
+CHECKBOX b = accounts.forcepwchg, VALUECHECKED="Y", VALUEUNCHECKED="N",NOT NULL;
+
+BUTTONEDIT p001 = accounts.login_pass, INVISIBLE, VERIFY, NOT NULL, TABINDEX=8, ACTION=generate, IMAGE="fa-cog";
+DATEEDIT p002 = accounts.pass_expire, NOT NULL, TABINDEX=9;
+
+PHANTOM accounts.salt;
+PHANTOM accounts.pass_hash;
+

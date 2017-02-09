@@ -1,0 +1,30 @@
+
+#+ Login demo main form
+
+TOOLBAR
+	ITEM quit (TEXT="Quit", IMAGE="fa-power-off")
+	ITEM login (TEXT="Login", IMAGE="fa-unlock")
+	ITEM shwcred (TEXT="Show Credentials", IMAGE="fa-key")
+	ITEM updcred (TEXT="Update Credentials", IMAGE="fa-key")
+END -- TB
+LAYOUT (TEXT="A Login Demo", WINDOWSTYLE="main2", IMAGE="fa-mortar-board")
+GRID
+{
+This is a simple Login demo program.
+[a]
+[msg                                     ]
+[""]
+<G "Secured Credentials from cred.xml file">
+ Type:    [f000                          ]
+ Username:[f001                          ]
+ Password:[f002                          ]
+}
+END -- GRID
+
+ATTRIBUTES
+LABEL msg = FORMONLY.msg, SIZEPOLICY=DYNAMIC, STYLE="big";
+IMAGE a : a IMAGE="fa-smile-o", STYLE="noborder", AUTOSCALE;
+
+f000 = FORMONLY.cred_type;
+f001 = FORMONLY.username;
+f002 = FORMONLY.password;
