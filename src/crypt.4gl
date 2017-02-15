@@ -39,7 +39,6 @@ FUNCTION encrypt(l_file_in, l_file_out)
     # Load XML file to be encrypted
 		DISPLAY "Loading source xml from ",l_file_in
     CALL doc.load(l_file_in)
-		--CALL doc.save(l_file_out||".x")
     LET root = doc.getDocumentElement()
     # Create symmetric AES256 key for XML encryption purposes
     LET symkey = xml.CryptoKey.Create("http://www.w3.org/2001/04/xmlenc#aes256-cbc")

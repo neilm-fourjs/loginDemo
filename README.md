@@ -48,6 +48,28 @@ dbi.default.driver = "dbmifx9x"
 ```
 The studio project sets DBNAME to "logindemo" so you can just create a new empty datebase called logindemo then run the mk_db.42r to create the table.
 
+## Source files
+A brief descrption of the source files included in this demo
+* crypt.4gl: A simple program to encrypted an xml config file
+* gl_lib.4gl: A cut-down version of a generic Genero library
+* lib_login.4gl: Login specific library functions used by the loginDemo program
+* lib_secure.4gl: The Security Library
+* logindemo.4gl: The demo program main source
+* logindemo.per: The main screen form for the demo
+* login.per: Login screen form
+* mk_db.4gl: Program to create the database table 'accounts' used by the demo
+* new_acct.per: New account screen form
+* schema.inc: Contains the SCHEMA statement for the name of the database
+
+## The etc folder
+A brief descrption of the files in the etc folder
+* .creds.xml: The encrypted version of creds.xml file
+* creds.xml: A simple example creditials XML file
+* default.4ad: Genero Action Defaults
+* default.4st: Genero Styles
+* logindemo.4db: Genero Studio database schema file
+* logindemo.db: SQLite demo database
+
 ## The Security Library ( lib_secure.4gl )
 This is the library that handles all the encryption and security related code. The main public functions are:
 * glsec_genPassword: Generate a random password that conforms to a set of rules
