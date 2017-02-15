@@ -49,7 +49,7 @@ FUNCTION glsec_genSalt()
 	RETURN security.RandomGenerator.CreateRandomString( 16 )
 END FUNCTION
 --------------------------------------------------------------------------------
-#+ Generate a hash or a password using a salt string
+#+ Generate a hash of a password using a salt string
 #+
 #+ @param l_pass - String - Password
 #+ @param l_salt - String - The salt value
@@ -193,6 +193,12 @@ FUNCTION glsec_getCreds(l_typ)
 	RETURN l_user, l_pwd
 END FUNCTION
 --------------------------------------------------------------------------------
+#+ Update creditials in an encrypted XML File
+#+
+#+ @param l_typ - String - The type of the data to return, eg: EMAIL / SMS provider creds
+#+ @param l_user - String - Username
+#+ @param l_pass - String - Password
+#+ @returns boolean
 FUNCTION glsec_updCreds(l_typ, l_user, l_pass)
 	DEFINE l_typ, l_user, l_pass, l_old_usr, l_old_pass STRING
 	DEFINE l_root xml.DomNode
