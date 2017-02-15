@@ -1,5 +1,11 @@
+
+IMPORT os
+IMPORT FGL gl_lib
 &include "schema.inc"
+
 MAIN
+
+	CALL gl_lib.db_connect()
 
 	--DROP TABLE accounts
 

@@ -1,2 +1,4 @@
 
-DATABASE logindemo
+&define DBNAME "logindemo"
+
+SCHEMA DBNAME

@@ -53,7 +53,7 @@
   </Settings>
   <LanguageList version="1.0"/>
   <PlatformList version="1.0"/>
-  <Group label="LoginDemo" language="Genero">
+  <Group environment="value:FGLPROFILE=$(ProjectDir)/etc/profile||value:DBNAME=logindemo" label="LoginDemo" language="Genero">
     <Application binaryName="crypt" dependencies="14000" id="168340406" label="crypt">
       <File filePath="src/crypt.4gl"/>
     </Application>
@@ -64,8 +64,9 @@
     <Library binaryName="etc" id="2084719298" label="etc">
       <File filePath="etc/default.4ad"/>
       <File filePath="etc/default.4st"/>
+      <File filePath="etc/profile"/>
     </Library>
-    <Library binaryName="general_lib" id="1831529840" label="general_lib">
+    <Library binaryName="general_lib" dependencies="1986" id="1831529840" label="general_lib">
       <File filePath="src/gl_lib.4gl"/>
     </Library>
     <Library binaryName="lib_login" dependencies="1831529840||14000||1986" id="1991845598" label="lib_login">
@@ -80,7 +81,7 @@
       <File filePath="src/logindemo.per"/>
       <File filePath="src/new_acct.per"/>
     </Application>
-    <Application binaryName="mk_db" dependencies="1986" id="1319958480" label="mk_db">
+    <Application binaryName="mk_db" dependencies="1986||1831529840" id="1319958480" label="mk_db">
       <File filePath="src/mk_db.4gl"/>
     </Application>
   </Group>

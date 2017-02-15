@@ -9,6 +9,7 @@
 IMPORT FGL lib_secure
 IMPORT FGL lib_login
 IMPORT FGL gl_lib
+
 &include "schema.inc"
 
 CONSTANT VER = "1.0"
@@ -20,9 +21,11 @@ MAIN
 	OPEN FORM ld FROM "logindemo"
 	DISPLAY FORM ld
 
-	DISPLAY "Hello" TO msg
-
 	CALL gl_lib.gl_init(TRUE)
+
+	CALL gl_lib.db_connect()
+
+	DISPLAY "Hello" TO msg
 
 	MENU
 		BEFORE MENU

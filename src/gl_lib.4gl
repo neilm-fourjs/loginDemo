@@ -1,6 +1,8 @@
 
 IMPORT os
 
+&include "schema.inc"
+
 PUBLIC DEFINE m_ui BOOLEAN
 PUBLIC DEFINE m_logDir STRING
 PUBLIC DEFINE m_logName STRING
@@ -12,6 +14,26 @@ FUNCTION gl_init(l_ui)
 	LET m_logdir = gl_getLogDir()
 	LET m_logName = gl_getLogName()
 	CALL STARTLOG( m_logdir||m_logName||".err" )
+END FUNCTION
+
+----------------------------------------------------------------------------------
+#+ Generic Windows message Dialog.  NOTE: This handles messages when there is no window!
+#+
+FUNCTION db_connect()
+	DEFINE l_dbname VARCHAR(20)
+	LET l_dbname = fgl_getEnv("DBNAME")
+	IF LENGTH(l_dbname) < 2 THEN LET l_dbname = DBNAME END IF
+	IF fgl_getResource( "dbi.default.driver" ) = "dbmsqt3xx" THEN
+		LET l_dbname = ".."||os.path.separator()||"etc"||os.path.separator()||l_dbname CLIPPED||".db"
+		IF NOT os.Path.exists(l_dbname) THEN
+			CREATE DATABASE l_dbname
+		END IF
+	END IF
+	TRY
+		CONNECT TO l_dbname
+	CATCH
+		CALL gl_winMessage("Error",SFMT(%"Failed to connect to %1\n%2:%3",l_dbname,STATUS,SQLERRMESSAGE),"exclamation")
+	END TRY
 END FUNCTION
 
 ----------------------------------------------------------------------------------
