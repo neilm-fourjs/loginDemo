@@ -49,13 +49,12 @@
 	<Style name=".bold">
 		<StyleAttribute name="fontWeight" value="bold" />
 	</Style>
-	<Style name="Group.login">
-		<StyleAttribute name="backgroundColor" value="#F2F2F9" />
+	<Style name="Group.login_g">
+		<!-- StyleAttribute name="backgroundColor" value="#F2F2F9" /-->
 	</Style>
 	<Style name=".login">
-		<StyleAttribute name="backgroundColor" value="white" />
+		<!--StyleAttribute name="backgroundColor" value="white" /-->
 		<StyleAttribute name="textColor" value="black" />
-		<StyleAttribute name="defaultTTFColor" value="darkblue" />
 		<StyleAttribute name="windowType" value="modal" />
 		<StyleAttribute name="border" value="tool" />
 		<StyleAttribute name="actionPanelPosition" value="none" />
@@ -116,6 +115,7 @@
 		<StyleAttribute name="windowType" value="normal" />
     <StyleAttribute name="actionPanelPosition" value="none" />
 		<StyleAttribute name="ringMenuPosition" value="none" />
+		<StyleAttribute name="defaultTTFColor" value="darkblue" />
 	</Style>
 	<Style name="Window.main">
 		<StyleAttribute name="windowType" value="normal" />
@@ -129,7 +129,6 @@
 		<StyleAttribute name="sizable" value="yes" />
 		<StyleAttribute name="position" value="center" />
 		<StyleAttribute name="statusBarType" value="panels4" />
-		<StyleAttribute name="defaultTTFColor" value="darkblue" />
 	</Style>
 
   <Style name="Window.main3">

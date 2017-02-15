@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<APPLICATION Parent="defaultgdc"
+<APPLICATION Parent="defaultwa"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:noNamespaceSchemaLocation="http://www.4js.com/ns/gas/3.00/cfextwa.xsd">
 
@@ -12,7 +12,7 @@
     <ENVIRONMENT_VARIABLE Id="FGLLDPATH">$(res.gre)/lib</ENVIRONMENT_VARIABLE>
     <ENVIRONMENT_VARIABLE Id="DBDATE">DMY4/</ENVIRONMENT_VARIABLE>
     <ENVIRONMENT_VARIABLE Id="DBNAME">logindemo</ENVIRONMENT_VARIABLE>
-    <PATH>$(res.path.logindemo)/bin300</PATH>
+    <PATH>$(res.path.logindemo)/bin310</PATH>
     <MODULE>loginDemo.42r</MODULE>
   </EXECUTION>
   <UA_OUTPUT>

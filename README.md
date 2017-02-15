@@ -17,12 +17,13 @@ This prject requires Genero Studio 3.00 or greater installed and licensed.
 
 Either use GeneroStudios main UI or build from command line using:
 ```
-gsmake loginDemo.4pw
+gsmake loginDemo300.4pw
 ```
 
 ## Running
 You can either run from GeneroStudio UI or run from the command line using:
 ```
+$ cd bin300
 $ FGLRESOURCEPATH=../etc; fglrun loginDemo.42r
 ```
 
