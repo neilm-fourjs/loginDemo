@@ -49,10 +49,13 @@
 	<Style name=".bold">
 		<StyleAttribute name="fontWeight" value="bold" />
 	</Style>
+	<Style name="Group.login">
+		<StyleAttribute name="backgroundColor" value="#F2F2F9" />
+	</Style>
 	<Style name=".login">
-		<StyleAttribute name="backgroundColor"         value="#F2F2F9" />
+		<StyleAttribute name="backgroundColor" value="white" />
 		<StyleAttribute name="textColor" value="black" />
-		<StyleAttribute name="defaultTTFColor" value="white" />
+		<StyleAttribute name="defaultTTFColor" value="darkblue" />
 		<StyleAttribute name="windowType" value="modal" />
 		<StyleAttribute name="border" value="tool" />
 		<StyleAttribute name="actionPanelPosition" value="none" />
@@ -97,7 +100,7 @@
 	</Style>
 	<Style name="Button.login">
 		<StyleAttribute name="backgroundColor" value="#B7B7CC" />
-		<StyleAttribute name="textColor" value="white" />
+		<StyleAttribute name="textColor" value="darkblue" />
 	</Style>
 	<Style name="Button.small">
 		<StyleAttribute name="scaleIcon" value="12px" />
