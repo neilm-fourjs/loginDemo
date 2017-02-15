@@ -17,7 +17,7 @@ This prject requires Genero Studio 3.00 or greater installed and licensed.
 
 Either use GeneroStudios main UI or build from command line using:
 ```
-gsmake login_demo.4pw
+gsmake loginDemo.4pw
 ```
 
 ## Running
