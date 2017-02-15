@@ -25,7 +25,7 @@ MAIN
 
 	CALL gl_lib.db_connect()
 
-	DISPLAY "Hello" TO msg
+	DISPLAY "DB:"||gl_lib.m_dbname TO msg
 
 	MENU
 		BEFORE MENU

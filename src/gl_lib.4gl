@@ -7,6 +7,7 @@ PUBLIC DEFINE m_ui BOOLEAN
 PUBLIC DEFINE m_logDir STRING
 PUBLIC DEFINE m_logName STRING
 PUBLIC DEFINE m_logDate BOOLEAN
+PUBLIC DEFINE m_dbname STRING
 
 FUNCTION gl_init(l_ui)
 	DEFINE l_ui BOOLEAN
@@ -29,6 +30,7 @@ FUNCTION db_connect()
 			CREATE DATABASE l_dbname
 		END IF
 	END IF
+	LET m_dbname = l_dbname
 	TRY
 		CONNECT TO l_dbname
 	CATCH
