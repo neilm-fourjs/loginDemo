@@ -25,7 +25,8 @@ MAIN
 
 	CALL gl_lib.db_connect()
 
-	DISPLAY "DB:"||gl_lib.m_dbname TO msg
+	DISPLAY "DB:"||gl_lib.m_dbname TO msg1
+	DISPLAY "IMG:"||NVL(fgl_getEnv("FGLIMAGEPATH"),"NULL") TO msg2
 
 	MENU
 		BEFORE MENU

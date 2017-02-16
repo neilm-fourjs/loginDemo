@@ -12,7 +12,8 @@ GRID
 {
 This is a simple Login demo program.
 [a]
-[msg                                     ]
+[msg1                                    ]
+[msg2                                    ]
 [""]
 <G "Secured Credentials from cred.xml file">
  Type:    [f000                          ]
@@ -22,7 +23,8 @@ This is a simple Login demo program.
 END -- GRID
 
 ATTRIBUTES
-LABEL msg = FORMONLY.msg, SIZEPOLICY=DYNAMIC, STYLE="big";
+LABEL msg1 = FORMONLY.msg1, SIZEPOLICY=DYNAMIC, STYLE="big";
+LABEL msg2 = FORMONLY.msg2, SIZEPOLICY=DYNAMIC;
 IMAGE a : a IMAGE="fa-smile-o", STYLE="noborder", AUTOSCALE;
 
 f000 = FORMONLY.cred_type;
