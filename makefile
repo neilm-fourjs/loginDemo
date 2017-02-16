@@ -9,7 +9,7 @@ GARNAME=loginDemo$(GENVER)
 GARFILE=packages/$(GARNAME).gar
 WARFILE=packages/loginDemo310.war
 
-all: build packages $(GARFILE)
+all: build gar
 
 build:
 	gsmake loginDemo$(GENVER).4pw
@@ -20,16 +20,37 @@ run: bin$(GENVER)/loginDemo.42r
 clean:
 	rm -rf bin* packages logs
 
+# -------------
+# GAR Files
+
 packages: 
 	mkdir packages	
 
-packages/loginDemo300.gar: bin300/loginDemo.42r
-	fglgar --gar --output $@ --application gas300/$(APPNAME).xcf
+gar: $(GARFILE)
 
-packages/loginDemo310.gar: bin310/loginDemo.42r
-	fglgar gar --output $@ --application gas310/$(APPNAME).xcf
+packages/loginDemo$(GENVER).gar: packages bin$(GENVER)/loginDemo.42r
+	$(info Building Genero Archive ...)
+	@cp gas$(GENVER)/MANIFEST .
+	@zip -qr $(GARFILE) MANIFEST gas$(GENVER)/g*.xcf bin$(GENVER)/* etc/.creds.xml etc/*.4?? etc/*.db etc/profile
+	@rm MANIFEST
+
+# -------------
+# GAS Deploy
+
+undeploy:
+	gasadmin --disable-archive $(GARNAME)
+	gasadmin --undeploy-archive $(GARNAME)
+
+deploy: $(GARFILE)
+	gasadmin --deploy-archive $(GARFILE)
+	gasadmin --enable-archive $(GARNAME)
+
+
+# -------------
+# JGAS War
 
 $(WARFILE): $(GARFILE)
+	$(info Building Genero WAR File ...)
 	fglgar war --input-gar $^ --output $@
 
 runwar: $(WARFILE)
@@ -37,16 +58,4 @@ runwar: $(WARFILE)
 
 launchurl: $(WARFILE)
 	google-chrome	http://localhost:8080/$(GARNAME)/ua/r/$(APPNAME)
-
-enable:
-	gasadmin --enable-archive $(GARNAME)
-
-undeploy:
-	gasadmin --undeploy-archive $(GARNAME)
-
-disable:
-	gasadmin --disable-archive $(GARNAME)
-
-deploy: $(GARFILE)
-	gasadmin --deploy-archive $(GARFILE)
 
