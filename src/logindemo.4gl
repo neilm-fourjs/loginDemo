@@ -36,7 +36,7 @@ MAIN
 		ON ACTION login
 			LET l_login = do_login()
 			IF l_login IS NOT NULL THEN
-				DISPLAY SFMT(%"Welcome %1",l_login) TO msg
+				DISPLAY SFMT(%"Welcome %1",l_login) TO msg1
 				CALL DIALOG.setActionActive("login", FALSE)
 				CALL DIALOG.setActionActive("shwcred",TRUE)
 				CALL DIALOG.setActionActive("updcred",TRUE)

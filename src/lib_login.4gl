@@ -2,9 +2,12 @@
 #+ This module is designed to present a login window and allow a user to login
 #+
 
+IMPORT os
 IMPORT FGL lib_secure
 IMPORT FGL gl_lib
 &include "schema.inc"
+
+CONSTANT EMAILPROG = "sendemail.sh" --"fglrun sendemail.42r"
 
 CONSTANT c_sym = "!$%^&*,.;@#?<>" -- valid symbols for use in a password
 
@@ -164,7 +167,7 @@ PRIVATE FUNCTION forgotten(l_login)
 				"NOTE: This link is only valid for 2 days.\n\n"||
 				"Please do not reply to this email.",fgl_getEnv("LOGINDEMO_SRV"),l_b64)
 
-	LET l_cmd = "fglrun sendemail.42r "||NVL(l_login,"NOEMAILADD!")||" \"[LoginDemo] "||NVL(l_subj,"NULLSUBJ")||"\" \""||NVL(l_body,"NULLBODY")||"\" 2> sendemail.err"
+	LET l_cmd = EMAILPROG||" "||NVL(l_login,"NOEMAILADD!")||" \"[LoginDemo] "||NVL(l_subj,"NULLSUBJ")||"\" \""||NVL(l_body,"NULLBODY")||"\" 2> "||os.path.join(m_logdir,"sendemail.err")
 	--DISPLAY "CMD:",NVL(l_cmd,"NULL")
 	ERROR "Sending Email, please wait ..."
 	CALL ui.interface.refresh()
