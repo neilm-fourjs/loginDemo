@@ -3,6 +3,10 @@ Security Library Demo
 
 A simple login style demo using encrypted passwords and an encrypted xml config file
 
+With Genero 3.00 the passwords are hashed using SHA256
+
+With Genero 3.10 the passwords are hashed using BCRYPT ( Blowfish )
+
 ## Structure of folders
 * src: Genero source code
 * src/forms: Genero screen forms
@@ -12,12 +16,24 @@ A simple login style demo using encrypted passwords and an encrypted xml config 
 * bin: Created a compile time for the runnable object files
 * logs: Created a runtime for logging
 
-## Building
+## Building - Multiple platform
 This prject requires Genero Studio 3.00 or greater installed and licensed.
 
 Either use GeneroStudios main UI or build from command line using:
 ```
 gsmake loginDemo300.4pw
+```
+
+## Building Extra - Linux / Mac ( assuming gnu make installed )
+You build and deploy a GAR file for the application using the makefile
+```
+$ make gar
+$ make deploy
+```
+
+With Genero 3.10 you can also build a WAR file and run using JGAS
+```
+$ make runwar
 ```
 
 ## Running
@@ -31,6 +47,10 @@ or Run via the Genero Application Server.
 
 The GAS xcf file ( in the GAS300 folder ) has a resource defined of res.path.myhome - this should be edited to point to the base
 directory where you have checked out this demo to, ie the expected path for the demo application is: $(res.path.myhome)/loginDemo
+
+Run the deployed GAR file using http://<server>/gas/ua/r/glogindemo
+
+Run the JGAS WAR using http://<server>:8080/loginDemo310/ua/r/logindemo
 
 ## Database
 
