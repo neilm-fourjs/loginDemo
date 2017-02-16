@@ -2,6 +2,18 @@
 #+ * Handle an encrypted XML config file
 #+ * Encrypt / Decrypt a password & salt pair for storing in a databaase
 #+
+#+ For Genero 3.00:
+#+	password encrypted using SHA256
+#+	you need to store the Salt and the Password hash
+#+
+#+ For Genero 3.10:
+#+	password encrypted using bcrypt ( Blowfish )
+#+	you only need to store the Password hash ( bcrypt included salt in hash )
+#+
+#+ WARNING: the two encryption methods are NOT compatible - so if you start the 3.00 then
+#+ upgrade to Genero 3.10 and want to use bcrypt you WILL have to regenerate all the password
+#+ hashes for your existing accounts!
+#+
 #+ This module initially written by: Neil J.Martin ( neilm@4js.com ) 
 #+
 
@@ -10,6 +22,11 @@ IMPORT os
 IMPORT security
 IMPORT util
 IMPORT FGL gl_lib
+
+-- For Genero 3.10 we are going to default to BCRYPT
+&ifdef G310
+&define BCRYPT
+&endif
 
 -- Private variables:
 DEFINE m_doc xml.domDocument
@@ -44,32 +61,89 @@ FUNCTION glsec_genPassword()
 	RETURN l_pass
 END FUNCTION
 --------------------------------------------------------------------------------
-#+ Generate a random salt string
+#+ Generate a salt string
 FUNCTION glsec_genSalt()
-	RETURN security.RandomGenerator.CreateRandomString( 16 )
+	DEFINE l_salt STRING
+
+&ifdef BCRYPT
+	CALL gl_logIt( "Generating BCrypt Salt" )
+	TRY
+		LET l_salt = security.BCrypt.GenerateSalt( 12 )
+  CATCH
+    CALL gl_logIt( "ERROR:"||STATUS||":"||SQLCA.SQLERRM)
+  END TRY
+&else
+	CALL gl_logIt( "Generating Random Salt" )
+	LET l_salt = security.RandomGenerator.CreateRandomString( 16 )
+&endif
+   CALL gl_logIt( "Salt Generated:"||l_salt||" ("||l_salt.getLength()||")")
+	RETURN l_salt
 END FUNCTION
 --------------------------------------------------------------------------------
 #+ Generate a hash of a password using a salt string
 #+
 #+ @param l_pass - String - Password
-#+ @param l_salt - String - The salt value
-#+ @return String - An Encrypted string using SHA256
-FUNCTION glsec_genHash(l_pass,l_salt)
+#+ @param l_salt - String - The salt value ( optional for Genero 3.10 )
+#+ @return String - An Encrypted string using SHA256 or BCrypt( Genero 3.10 )
+FUNCTION glsec_genPasswordHash(l_pass,l_salt)
 	DEFINE l_pass, l_salt STRING
 	DEFINE l_hash STRING
 	DEFINE l_dgst security.Digest
 
 	LET l_pass = l_pass.trim()
 	LET l_salt = l_salt.trim()
-  TRY
+	IF l_salt IS NULL THEN
+		LET l_salt = glsec_genSalt()
+	END IF
+	TRY
+&ifdef BCRYPT
+		CALL gl_logIt( "Generating BCrypt HashPassword" )
+		LET l_hash = Security.BCrypt.HashPassword(l_pass, l_salt)
+&else
+		CALL gl_logIt( "Generating SHA256 HashPassword" )
     LET l_dgst = security.Digest.CreateDigest("SHA256")
     CALL l_dgst.AddStringData(l_pass||l_salt)
     LET l_hash = l_dgst.DoBase64Digest()
+&endif
+		CALL gl_logIt( "Hash created:"||l_hash||" ("||l_hash.getLength()||")")
   CATCH
     CALL gl_logIt( "ERROR:"||STATUS||":"||SQLCA.SQLERRM)
   END TRY
 
 	RETURN l_hash
+END FUNCTION
+--------------------------------------------------------------------------------
+#+ Check the password against it's hash
+#+
+#+ @param l_pass - String - Password
+#+ @param l_passhash - String - Password Hash
+#+ @param l_salt - String - The salt value ( not required for BCRYPT )
+#+ @return boolean
+FUNCTION glsec_chkPassword(l_pass,l_passhash,l_salt)
+	DEFINE l_pass, l_passhash, l_salt, l_hash STRING
+	LET l_pass = l_pass.trim()
+	LET l_passhash  = l_passhash.trim()
+
+&ifdef BCRYPT
+	CALL gl_logIt("checking password using BCRYPT")
+	TRY
+		IF Security.BCrypt.CheckPassword(l_pass, l_passhash) THEN
+			CALL gl_logIt("Password checked okay.")
+			RETURN TRUE
+		END IF
+	CATCH
+		CALL gl_logIt( "ERROR:"||STATUS||":"||SQLCA.SQLERRM)
+	END TRY
+&else
+	CALL gl_logIt("checking password using SHA256")
+	LET l_hash = glsec_genPasswordHash(l_pass,l_salt)
+	IF l_hash = l_passhash THEN
+		CALL gl_logIt("Password checked okay.")
+		RETURN TRUE
+	END IF
+&endif
+	CALL gl_logIt("Password checked failed.")
+	RETURN FALSE
 END FUNCTION
 --------------------------------------------------------------------------------
 #+ Get a string from base64 string or raise an error prompt

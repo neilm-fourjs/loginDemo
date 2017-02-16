@@ -7,7 +7,7 @@ MAIN
 
 	CALL gl_lib.db_connect()
 
-	--DROP TABLE accounts
+	DROP TABLE accounts
 
 	TRY
 		SELECT COUNT(*) FROM accounts 
@@ -24,8 +24,8 @@ MAIN
 			acct_type   SMALLINT,
 			active      SMALLINT NOT NULL,
 			forcepwchg  CHAR(1),
-			login_pass  VARCHAR(16),
-			salt        VARCHAR(32) NOT NULL,
+			login_pass  VARCHAR(16), -- not actually used.
+			salt        VARCHAR(32) NOT NULL, -- for Genero 3.10 using bcrypt we don't need this
 			pass_hash   CHAR(64) NOT NULL,
 			pass_expire DATE
 		)

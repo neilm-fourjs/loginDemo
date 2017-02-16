@@ -3,14 +3,15 @@ ifndef GENVER
 export GENVER=300
 endif
 export FGLRESOURCE=../etc
+export FGLPROFILE=../etc/profile
 APPNAME=logindemo
 GARNAME=loginDemo$(GENVER)
 GARFILE=packages/$(GARNAME).gar
 WARFILE=packages/loginDemo310.war
 
-all: bin$(GENVER)/loginDemo.42r packages $(GARFILE)
+all: build packages $(GARFILE)
 
-bin$(GENVER)/loginDemo.42r:
+build:
 	gsmake loginDemo$(GENVER).4pw
 
 run: bin$(GENVER)/loginDemo.42r

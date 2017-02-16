@@ -31,6 +31,7 @@ FUNCTION db_connect()
 		END IF
 	END IF
 	LET m_dbname = l_dbname
+	CALL gl_logIt("Connecting to "||l_dbname)
 	TRY
 		CONNECT TO l_dbname
 	CATCH

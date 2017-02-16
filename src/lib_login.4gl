@@ -89,7 +89,6 @@ PRIVATE FUNCTION validate_login(l_login,l_pass)
 	DEFINE l_login LIKE accounts.email
 	DEFINE l_pass LIKE accounts.login_pass
 	DEFINE l_acc RECORD LIKE accounts.*
-	DEFINE l_hash LIKE accounts.pass_hash
 
 -- does account exist?
 	SELECT * INTO l_acc.* FROM accounts WHERE email = l_login
@@ -99,9 +98,8 @@ PRIVATE FUNCTION validate_login(l_login,l_pass)
 	END IF
 
 -- is password correct?
-	LET l_hash = lib_secure.glsec_genHash(l_pass,l_acc.salt)
-	IF l_hash != l_acc.pass_hash THEN
-		DISPLAY "Hash wrong for:",l_login," Password:",l_acc.login_pass
+	IF NOT lib_secure.glsec_chkPassword(l_pass,l_acc.pass_hash,l_acc.salt) THEN
+		DISPLAY "Hash wrong for:",l_login," PasswordHash:",l_acc.pass_hash
 		RETURN FALSE
 	END IF
 
@@ -154,7 +152,7 @@ PRIVATE FUNCTION forgotten(l_login)
 	LET l_acc.pass_expire = TODAY + 2
 	LET l_acc.login_pass = lib_secure.glsec_genPassword()
 	LET l_acc.salt = lib_secure.glsec_genSalt()
-	LET l_acc.pass_hash = lib_secure.glsec_genHash(l_acc.login_pass ,l_acc.salt)
+	LET l_acc.pass_hash = lib_secure.glsec_genPasswordHash(l_acc.login_pass ,l_acc.salt)
 	LET l_acc.forcepwchg = "Y"
 	LET l_b64 = lib_secure.glsec_toBase64( l_acc.pass_hash )
 -- Need to actually send email!!
@@ -241,7 +239,7 @@ PRIVATE FUNCTION passchg(l_login)
 
 	LET l_acc.login_pass = l_pass1
 	LET l_acc.salt = lib_secure.glsec_genSalt()
-	LET l_acc.pass_hash = lib_secure.glsec_genHash(l_acc.login_pass ,l_acc.salt)
+	LET l_acc.pass_hash = lib_secure.glsec_genPasswordHash(l_acc.login_pass ,l_acc.salt)
 	LET l_acc.forcepwchg = "N"
 	LET l_acc.pass_expire = NULL
 	--DISPLAY "New Hash:",l_acc.pass_hash
