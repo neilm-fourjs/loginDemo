@@ -98,8 +98,8 @@ PRIVATE FUNCTION validate_login(l_login,l_pass)
 	END IF
 
 -- is password correct?
-	IF NOT lib_secure.glsec_chkPassword(l_pass,l_acc.pass_hash,l_acc.salt) THEN
-		DISPLAY "Hash wrong for:",l_login," PasswordHash:",l_acc.pass_hash
+	IF NOT lib_secure.glsec_chkPassword(l_pass,l_acc.pass_hash,l_acc.salt,l_acc.hash_type) THEN
+		DISPLAY "Hash wrong for:",l_login," PasswordHash:",l_acc.pass_hash, " Hashtype:",l_acc.hash_type
 		RETURN FALSE
 	END IF
 
@@ -151,8 +151,9 @@ PRIVATE FUNCTION forgotten(l_login)
 
 	LET l_acc.pass_expire = TODAY + 2
 	LET l_acc.login_pass = lib_secure.glsec_genPassword()
-	LET l_acc.salt = lib_secure.glsec_genSalt()
-	LET l_acc.pass_hash = lib_secure.glsec_genPasswordHash(l_acc.login_pass ,l_acc.salt)
+	LET l_acc.hash_type = lib_secure.glsec_getHashType()
+	LET l_acc.salt = lib_secure.glsec_genSalt(l_acc.hash_type)
+	LET l_acc.pass_hash = lib_secure.glsec_genPasswordHash(l_acc.login_pass ,l_acc.salt,l_acc.hash_type)
 	LET l_acc.forcepwchg = "Y"
 	LET l_b64 = lib_secure.glsec_toBase64( l_acc.pass_hash )
 -- Need to actually send email!!
@@ -238,14 +239,15 @@ PRIVATE FUNCTION passchg(l_login)
 	END WHILE
 
 	LET l_acc.login_pass = l_pass1
-	LET l_acc.salt = lib_secure.glsec_genSalt()
-	LET l_acc.pass_hash = lib_secure.glsec_genPasswordHash(l_acc.login_pass ,l_acc.salt)
+	LET l_acc.hash_type = lib_secure.glsec_getHashType()
+	LET l_acc.salt = lib_secure.glsec_genSalt(l_acc.hash_type)
+	LET l_acc.pass_hash = lib_secure.glsec_genPasswordHash(l_acc.login_pass ,l_acc.salt,l_acc.hash_type)
 	LET l_acc.forcepwchg = "N"
 	LET l_acc.pass_expire = NULL
 	--DISPLAY "New Hash:",l_acc.pass_hash
 	UPDATE accounts 
-		SET (salt, pass_hash, forcepwchg, pass_expire) = 
-				(l_acc.salt, l_acc.pass_hash, l_acc.forcepwchg, l_acc.pass_expire )
+		SET (salt, pass_hash, forcepwchg, pass_expire, hash_type) = 
+				(l_acc.salt, l_acc.pass_hash, l_acc.forcepwchg, l_acc.pass_expire, l_acc.hash_type)
 		WHERE email = l_login
 
 	CALL gl_lib.gl_winMessage(%"Comfirmation",%"Your password has be updated, please don't forget it.\nWe cannot retrieve this password, only reset it.\n","exclamation")

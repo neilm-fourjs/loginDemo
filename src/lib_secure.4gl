@@ -61,22 +61,44 @@ FUNCTION glsec_genPassword()
 	RETURN l_pass
 END FUNCTION
 --------------------------------------------------------------------------------
-#+ Generate a salt string
-FUNCTION glsec_genSalt()
-	DEFINE l_salt STRING
-
-&ifdef BCRYPT
-	CALL gl_logIt( "Generating BCrypt Salt" )
-	TRY
-		LET l_salt = security.BCrypt.GenerateSalt( 12 )
-  CATCH
-    CALL gl_logIt( "ERROR:"||STATUS||":"||SQLCA.SQLERRM)
-  END TRY
+#+ Get the hash type
+#+
+#+ @return string
+FUNCTION glsec_getHashType()
+&ifdef G310
+	RETURN "BCRYPT"
 &else
-	CALL gl_logIt( "Generating Random Salt" )
-	LET l_salt = security.RandomGenerator.CreateRandomString( 16 )
+	RETURN "SHA256"
 &endif
-   CALL gl_logIt( "Salt Generated:"||l_salt||" ("||l_salt.getLength()||")")
+END FUNCTION
+--------------------------------------------------------------------------------
+#+ Generate a salt string
+#+
+#+ @param  l_hashtype - String -The type of hash to use ( can be NULL for default )
+#+ @returns String - salt value
+FUNCTION glsec_genSalt(l_hashtype)
+	DEFINE l_hashtype, l_salt STRING
+	IF l_hashtype IS NULL THEN
+		LET l_hashtype = glsec_getHashType()
+	END IF
+	CASE l_hashtype
+&ifdef G310
+		WHEN "BCRYPT"
+			CALL gl_logIt( "Generating BCrypt Salt" )
+			TRY
+				LET l_salt = security.BCrypt.GenerateSalt( 12 )
+			CATCH
+				CALL gl_logIt( "ERROR:"||STATUS||":"||SQLCA.SQLERRM)
+			END TRY
+&endif
+		WHEN "SHA256"
+			CALL gl_logIt( "Generating Random Salt" )
+			LET l_salt = security.RandomGenerator.CreateRandomString( 16 )
+		OTHERWISE
+			CALL gl_winMessage("Error","Unsupported Encryption Type Requested!","exclamation")
+			EXIT PROGRAM
+	END CASE
+  CALL gl_logIt( "Salt Generated:"||l_salt||" ("||l_salt.getLength()||")")
 	RETURN l_salt
 END FUNCTION
 --------------------------------------------------------------------------------
@@ -84,27 +106,37 @@ END FUNCTION
 #+
 #+ @param l_pass - String - Password
 #+ @param l_salt - String - The salt value ( optional for Genero 3.10 )
+#+ @param  l_hashtype - String -The type of hash to use ( can be NULL for default )
 #+ @return String - An Encrypted string using SHA256 or BCrypt( Genero 3.10 )
-FUNCTION glsec_genPasswordHash(l_pass,l_salt)
-	DEFINE l_pass, l_salt STRING
+FUNCTION glsec_genPasswordHash(l_pass,l_salt,l_hashtype)
+	DEFINE l_pass, l_salt, l_hashtype STRING
 	DEFINE l_hash STRING
 	DEFINE l_dgst security.Digest
 
 	LET l_pass = l_pass.trim()
 	LET l_salt = l_salt.trim()
+	IF l_hashtype IS NULL THEN
+		LET l_hashtype = glsec_getHashType()
+	END IF
 	IF l_salt IS NULL THEN
-		LET l_salt = glsec_genSalt()
+		LET l_salt = glsec_genSalt(l_hashtype)
 	END IF
 	TRY
-&ifdef BCRYPT
-		CALL gl_logIt( "Generating BCrypt HashPassword" )
-		LET l_hash = Security.BCrypt.HashPassword(l_pass, l_salt)
-&else
-		CALL gl_logIt( "Generating SHA256 HashPassword" )
-    LET l_dgst = security.Digest.CreateDigest("SHA256")
-    CALL l_dgst.AddStringData(l_pass||l_salt)
-    LET l_hash = l_dgst.DoBase64Digest()
+		CASE l_hashtype
+&ifdef G310
+			WHEN "BCRYPT"
+				CALL gl_logIt( "Generating BCrypt HashPassword" )
+				LET l_hash = Security.BCrypt.HashPassword(l_pass, l_salt)
 &endif
+			WHEN "SHA256"
+				CALL gl_logIt( "Generating SHA256 HashPassword" )
+				LET l_dgst = security.Digest.CreateDigest("SHA256")
+				CALL l_dgst.AddStringData(l_pass||l_salt)
+				LET l_hash = l_dgst.DoBase64Digest()
+			OTHERWISE
+				CALL gl_winMessage("Error","Unsupported Encryption Type Requested!","exclamation")
+				EXIT PROGRAM
+		END CASE
 		CALL gl_logIt( "Hash created:"||l_hash||" ("||l_hash.getLength()||")")
   CATCH
     CALL gl_logIt( "ERROR:"||STATUS||":"||SQLCA.SQLERRM)
@@ -118,30 +150,41 @@ END FUNCTION
 #+ @param l_pass - String - Password
 #+ @param l_passhash - String - Password Hash
 #+ @param l_salt - String - The salt value ( not required for BCRYPT )
+#+ @param  l_hashtype - String -The type of hash to use ( can be NULL for default )
 #+ @return boolean
-FUNCTION glsec_chkPassword(l_pass,l_passhash,l_salt)
-	DEFINE l_pass, l_passhash, l_salt, l_hash STRING
+FUNCTION glsec_chkPassword(l_pass,l_passhash,l_salt,l_hashtype)
+	DEFINE l_pass, l_passhash, l_salt, l_hash, l_hashtype STRING
+
 	LET l_pass = l_pass.trim()
 	LET l_passhash  = l_passhash.trim()
-
-&ifdef BCRYPT
-	CALL gl_logIt("checking password using BCRYPT")
-	TRY
-		IF Security.BCrypt.CheckPassword(l_pass, l_passhash) THEN
-			CALL gl_logIt("Password checked okay.")
-			RETURN TRUE
-		END IF
-	CATCH
-		CALL gl_logIt( "ERROR:"||STATUS||":"||SQLCA.SQLERRM)
-	END TRY
-&else
-	CALL gl_logIt("checking password using SHA256")
-	LET l_hash = glsec_genPasswordHash(l_pass,l_salt)
-	IF l_hash = l_passhash THEN
-		CALL gl_logIt("Password checked okay.")
-		RETURN TRUE
+	IF l_hashtype IS NULL THEN
+		LET l_hashtype = glsec_getHashType()
 	END IF
+	CASE l_hashtype
+&ifdef G310
+		WHEN "BCRYPT"
+			CALL gl_logIt("checking password using BCRYPT")
+			TRY
+				IF Security.BCrypt.CheckPassword(l_pass, l_passhash) THEN
+					CALL gl_logIt("Password checked okay.")
+					RETURN TRUE
+				END IF
+			CATCH
+				CALL gl_logIt( "ERROR:"||STATUS||":"||SQLCA.SQLERRM)
+			END TRY
 &endif
+		WHEN "SHA256"
+			CALL gl_logIt("checking password using SHA256")
+			LET l_hash = glsec_genPasswordHash(l_pass, l_salt, l_hashtype)
+			IF l_hash = l_passhash THEN
+				CALL gl_logIt("Password checked okay.")
+				RETURN TRUE
+			END IF
+		OTHERWISE
+			CALL gl_winMessage("Error","Unsupported Encryption Type Requested!","exclamation")
+			EXIT PROGRAM
+	END CASE
+
 	CALL gl_logIt("Password checked failed.")
 	RETURN FALSE
 END FUNCTION

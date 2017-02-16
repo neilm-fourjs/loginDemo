@@ -112,8 +112,9 @@ FUNCTION new_acct()
 	CLOSE WINDOW new_acct
 
 	IF NOT int_flag THEN
-		LET l_acc.salt = lib_secure.glsec_genSalt() -- NOTE: for Genero 3.10 we don't need to store this
-		LET l_acc.pass_hash = lib_secure.glsec_genPasswordHash(l_acc.login_pass ,l_acc.salt)
+		LET l_acc.hash_type = lib_secure.glsec_getHashType()
+		LET l_acc.salt = lib_secure.glsec_genSalt(l_acc.hash_type) -- NOTE: for Genero 3.10 we don't need to store this
+		LET l_acc.pass_hash = lib_secure.glsec_genPasswordHash(l_acc.login_pass ,l_acc.salt,l_acc.hash_type)
 		LET l_acc.login_pass = "PasswordEncrypted!" -- we don't store their clear text password!
 		INSERT INTO accounts VALUES l_acc.*
 	END IF

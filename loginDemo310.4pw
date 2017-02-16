@@ -81,7 +81,7 @@
       <File filePath="src/logindemo.per"/>
       <File filePath="src/new_acct.per"/>
     </Application>
-    <Application binaryName="mk_db" dependencies="1986,1831529840" id="1319958480" label="mk_db">
+    <Application binaryName="mk_db" dependencies="1986,1831529840,14000" id="1319958480" label="mk_db">
       <File filePath="src/mk_db.4gl"/>
     </Application>
   </Group>

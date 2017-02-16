@@ -43,6 +43,11 @@ $ cd bin300
 $ FGLRESOURCEPATH=../etc; fglrun loginDemo.42r
 ```
 
+On Linux or Mac with gnu make you can just do:
+```
+$ make run
+```
+
 or Run via the Genero Application Server.
 
 The GAS xcf file ( in the GAS300 folder ) has a resource defined of res.path.myhome - this should be edited to point to the base
