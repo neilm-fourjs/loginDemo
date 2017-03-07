@@ -3,7 +3,7 @@
 #+ * Encrypt / Decrypt a password & salt pair for storing in a databaase
 #+
 #+ For Genero 3.00:
-#+	password encrypted using SHA256
+#+	password encrypted using SHA512
 #+	you need to store the Salt and the Password hash
 #+
 #+ For Genero 3.10:
@@ -68,7 +68,7 @@ FUNCTION glsec_getHashType()
 &ifdef G310
 	RETURN "BCRYPT"
 &else
-	RETURN "SHA256"
+	RETURN "SHA512"
 &endif
 END FUNCTION
 --------------------------------------------------------------------------------
@@ -91,7 +91,7 @@ FUNCTION glsec_genSalt(l_hashtype)
 				CALL gl_logIt( "ERROR:"||STATUS||":"||SQLCA.SQLERRM)
 			END TRY
 &endif
-		WHEN "SHA256"
+		WHEN "SHA512"
 			CALL gl_logIt( "Generating Random Salt" )
 			LET l_salt = security.RandomGenerator.CreateRandomString( 16 )
 		OTHERWISE
@@ -107,7 +107,7 @@ END FUNCTION
 #+ @param l_pass - String - Password
 #+ @param l_salt - String - The salt value ( optional for Genero 3.10 )
 #+ @param  l_hashtype - String -The type of hash to use ( can be NULL for default )
-#+ @return String - An Encrypted string using SHA256 or BCrypt( Genero 3.10 )
+#+ @return String - An Encrypted string using SHA512 or BCrypt( Genero 3.10 )
 FUNCTION glsec_genPasswordHash(l_pass,l_salt,l_hashtype)
 	DEFINE l_pass, l_salt, l_hashtype STRING
 	DEFINE l_hash STRING
@@ -128,9 +128,9 @@ FUNCTION glsec_genPasswordHash(l_pass,l_salt,l_hashtype)
 				CALL gl_logIt( "Generating BCrypt HashPassword" )
 				LET l_hash = Security.BCrypt.HashPassword(l_pass, l_salt)
 &endif
-			WHEN "SHA256"
-				CALL gl_logIt( "Generating SHA256 HashPassword" )
-				LET l_dgst = security.Digest.CreateDigest("SHA256")
+			WHEN "SHA512"
+				CALL gl_logIt( "Generating "||l_hashtype||" HashPassword" )
+				LET l_dgst = security.Digest.CreateDigest(l_hashtype)
 				CALL l_dgst.AddStringData(l_pass||l_salt)
 				LET l_hash = l_dgst.DoBase64Digest()
 			OTHERWISE
@@ -173,8 +173,8 @@ FUNCTION glsec_chkPassword(l_pass,l_passhash,l_salt,l_hashtype)
 				CALL gl_logIt( "ERROR:"||STATUS||":"||SQLCA.SQLERRM)
 			END TRY
 &endif
-		WHEN "SHA256"
-			CALL gl_logIt("checking password using SHA256")
+		WHEN "SHA512"
+			CALL gl_logIt("checking password using "||l_hashtype)
 			LET l_hash = glsec_genPasswordHash(l_pass, l_salt, l_hashtype)
 			IF l_hash = l_passhash THEN
 				CALL gl_logIt("Password checked okay.")

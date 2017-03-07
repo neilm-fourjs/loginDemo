@@ -24,10 +24,10 @@
     <Column fglLength="2" fglType="1" name="acct_type" notNull="false" order="8" status="U" uuid="db/column8"/>
     <Column fglLength="2" fglType="1" name="active" notNull="true" order="9" status="U" uuid="db/column9"/>
     <Column fglLength="1" fglType="0" name="forcepwchg" notNull="false" order="10" status="U" uuid="db/column10"/>
-    <Column fglLength="12" fglType="13" name="hash_type" notNull="false" order="11" status="U" uuid="db/column15"/>
+    <Column fglLength="12" fglType="13" name="hash_type" notNull="true" order="11" status="U" uuid="db/column15"/>
     <Column fglLength="16" fglType="13" name="login_pass" notNull="false" order="12" status="U" uuid="db/column11"/>
-    <Column fglLength="32" fglType="13" name="salt" notNull="true" order="13" status="U" uuid="db/column12"/>
-    <Column fglLength="64" fglType="0" name="pass_hash" notNull="true" order="14" status="U" uuid="db/column13"/>
+    <Column fglLength="64" fglType="13" name="salt" notNull="false" order="13" status="U" uuid="db/column12"/>
+    <Column fglLength="128" fglType="13" name="pass_hash" notNull="true" order="14" status="U" uuid="db/column13"/>
     <Column fglLength="4" fglType="7" name="pass_expire" notNull="false" order="15" status="U" uuid="db/column14"/>
   </Table>
 </Schema>
