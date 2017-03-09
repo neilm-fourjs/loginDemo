@@ -1,0 +1,4 @@
+<MANIFEST>
+	<DESCRIPTION>This archive contains logindemo application</DESCRIPTION>
+	<APPLICATION xcf='gas250/glogindemo.xcf' />
+</MANIFEST>

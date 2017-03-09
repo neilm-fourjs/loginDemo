@@ -1,0 +1,23 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<Schema version="3.0" id="{b6994c48-3f32-4a49-943a-8a6447fbdba1}">
+  <ExtractionSettings>
+    <ExtractionOptions type="IBM Informix" cvmeth="AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" casens="LowerCase" ignerr="true" systab="false"/>
+  </ExtractionSettings>
+  <Table name="accounts" status="U">
+    <Column name="acct_id" fglType="262" fglLength="4" order="1" notNull="true" status="U"/>
+    <Column name="salutation" fglType="13" fglLength="60" order="2" notNull="false" status="U"/>
+    <Column name="forenames" fglType="269" fglLength="60" order="3" notNull="true" status="U"/>
+    <Column name="surname" fglType="269" fglLength="60" order="4" notNull="true" status="U"/>
+    <Column name="position" fglType="13" fglLength="60" order="5" notNull="false" status="U"/>
+    <Column name="email" fglType="269" fglLength="60" order="6" notNull="true" status="U"/>
+    <Column name="comment" fglType="13" fglLength="60" order="7" notNull="false" status="U"/>
+    <Column name="acct_type" fglType="1" fglLength="2" order="8" notNull="false" status="U"/>
+    <Column name="active" fglType="257" fglLength="2" order="9" notNull="true" status="U"/>
+    <Column name="forcepwchg" fglType="0" fglLength="1" order="10" notNull="false" status="U"/>
+    <Column name="hash_type" fglType="269" fglLength="12" order="11" notNull="true" status="U"/>
+    <Column name="login_pass" fglType="13" fglLength="16" order="12" notNull="false" status="U"/>
+    <Column name="salt" fglType="13" fglLength="64" order="13" notNull="false" status="U"/>
+    <Column name="pass_hash" fglType="269" fglLength="128" order="14" notNull="true" status="U"/>
+    <Column name="pass_expire" fglType="7" fglLength="4" order="15" notNull="false" status="U"/>
+  </Table>
+</Schema>
