@@ -4,6 +4,8 @@ export GENVER=300
 endif
 export FGLRESOURCE=../etc
 export FGLPROFILE=../etc/profile
+export FGLSQLDEBUG=0
+export FGLCOVERAGE=0
 APPNAME=logindemo
 GARNAME=loginDemo$(GENVER)
 GARFILE=packages/$(GARNAME).gar

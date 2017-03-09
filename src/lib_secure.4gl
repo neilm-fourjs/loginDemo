@@ -3,7 +3,7 @@
 #+ * Encrypt / Decrypt a password & salt pair for storing in a databaase
 #+
 #+ For Genero 3.00:
-#+	password encrypted using SHA512
+#+	password encrypted using SHA512 ( with salt + multiple iterations )
 #+	you need to store the Salt and the Password hash
 #+
 #+ For Genero 3.10:
@@ -34,7 +34,8 @@ DEFINE m_user_node, m_pass_node xml.domNode
 DEFINE m_file STRING
 
 CONSTANT DEFPASSLEN=16
-CONSTANT c_sym = "!$%^&*,.;@#?<>"
+CONSTANT C_SYMBOLS = "!$%^&*,.;@#?<>"
+CONSTANT C_SHA_ITERATIONS=64
 --------------------------------------------------------------------------------
 #+ Generate a random password that conforms to the follow set of rules:
 #+ Password must be at least DEFPASSLEN chars long
@@ -55,8 +56,8 @@ FUNCTION glsec_genPassword()
 -- Add a random symbol to the random string.
 	CALL util.math.srand()
 	LET x = util.math.rand(DEFPASSLEN)
-	LET y = util.math.rand( c_sym.getLength() )
-	LET l_pass[x] = c_sym.getCharAt(y)
+	LET y = util.math.rand( C_SYMBOLS.getLength() )
+	LET l_pass[x] = C_SYMBOLS.getCharAt(y)
 --	DISPLAY "Pass:",l_pass
 	RETURN l_pass
 END FUNCTION
@@ -112,6 +113,7 @@ FUNCTION glsec_genPasswordHash(l_pass,l_salt,l_hashtype)
 	DEFINE l_pass, l_salt, l_hashtype STRING
 	DEFINE l_hash STRING
 	DEFINE l_dgst security.Digest
+	DEFINE x SMALLINT
 
 	LET l_pass = l_pass.trim()
 	LET l_salt = l_salt.trim()
@@ -130,9 +132,12 @@ FUNCTION glsec_genPasswordHash(l_pass,l_salt,l_hashtype)
 &endif
 			WHEN "SHA512"
 				CALL gl_logIt( "Generating "||l_hashtype||" HashPassword" )
-				LET l_dgst = security.Digest.CreateDigest(l_hashtype)
-				CALL l_dgst.AddStringData(l_pass||l_salt)
-				LET l_hash = l_dgst.DoBase64Digest()
+				LET l_hash = l_pass||l_salt
+				FOR x = 1 TO C_SHA_ITERATIONS
+					LET l_dgst = security.Digest.CreateDigest(l_hashtype)
+					CALL l_dgst.AddStringData(l_hash)
+					LET l_hash = l_dgst.DoBase64Digest()
+				END FOR
 			OTHERWISE
 				CALL gl_winMessage("Error","Unsupported Encryption Type Requested!","exclamation")
 				EXIT PROGRAM
