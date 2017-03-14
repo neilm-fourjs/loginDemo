@@ -2,7 +2,7 @@
 ifndef GENVER
 export GENVER=300
 endif
-export FGLRESOURCE=../etc
+export FGLRESOURCEPATH=../etc
 export FGLPROFILE=../etc/profile
 export FGLSQLDEBUG=0
 export FGLCOVERAGE=0
@@ -36,8 +36,8 @@ packages/loginDemo$(GENVER).gar: packages bin$(GENVER)/loginDemo.42r
 	@zip -qr $(GARFILE) MANIFEST gas$(GENVER)/g*.xcf bin$(GENVER)/* etc/.creds.xml etc/*.4?? etc/*.db etc/profile
 	@rm MANIFEST
 
-# -------------
-# GAS Deploy
+# ----------------------
+# GAS Deploy 2.50 / 3.00
 
 undeploy:
 	gasadmin --disable-archive $(GARNAME)
@@ -46,6 +46,17 @@ undeploy:
 deploy: $(GARFILE)
 	gasadmin --deploy-archive $(GARFILE)
 	gasadmin --enable-archive $(GARNAME)
+
+# ----------------------
+# GAS Deploy 3.10
+
+undeploy310:
+	gasadmin gar --disable-archive $(GARNAME)
+	gasadmin gar --undeploy-archive $(GARNAME)
+
+deploy310: $(GARFILE)
+	gasadmin gar --deploy-archive $(GARFILE)
+	gasadmin gar --enable-archive $(GARNAME)
 
 
 # -------------

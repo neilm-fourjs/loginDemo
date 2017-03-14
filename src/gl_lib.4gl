@@ -160,7 +160,7 @@ END FUNCTION --}}}
 --------------------------------------------------------------------------------
 #+ Gets sourcefile.module:line from a stacktrace.
 #+
-FUNCTION gl_getCallingModuleName()
+FUNCTION gl_getCallingModuleName() --{{{
 	DEFINE l_fil,l_mod,l_lin STRING
 	DEFINE x,y SMALLINT
 	LET l_fil = base.Application.getStackTrace()
@@ -190,4 +190,15 @@ FUNCTION gl_getCallingModuleName()
 	--DISPLAY "Fil:",l_fil," Mod:",l_mod," Line:",l_lin
 	LET l_fil = NVL(l_fil,"FILE?")||"."||NVL(l_mod,"MOD?")||":"||NVL(l_lin,"LINE?")
 	RETURN l_fil
+END FUNCTION --}}}
+--------------------------------------------------------------------------------
+#+ Gets sourcefile.module:line from a stacktrace.
+#+
+FUNCTION gl_win_title_ver(l_appname,l_ver) --{{{
+	DEFINE l_appname,l_ver STRING
+	DEFINE w ui.Window
+	LET w = ui.Window.getCurrent()
+	IF w IS NOT NULL THEN
+		CALL w.setText(l_appname||" "||l_ver )
+	END IF
 END FUNCTION --}}}

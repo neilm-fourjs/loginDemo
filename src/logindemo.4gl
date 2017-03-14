@@ -12,7 +12,7 @@ IMPORT FGL gl_lib
 
 &include "schema.inc"
 
-CONSTANT VER = "1.0"
+CONSTANT VER = "1.1"
 CONSTANT APP = %"Login Demo"
 
 MAIN
@@ -20,7 +20,7 @@ MAIN
 
 	OPEN FORM ld FROM "logindemo"
 	DISPLAY FORM ld
-
+	CALL gl_win_title_ver(APP,VER)
 	CALL gl_lib.gl_init(TRUE)
 
 	CALL gl_lib.db_connect()

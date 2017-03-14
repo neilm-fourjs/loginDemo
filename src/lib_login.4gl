@@ -34,9 +34,11 @@ PUBLIC FUNCTION login(l_appname, l_ver, l_allow_new)
 	CALL login_ver_title(l_appname, l_ver)
 
 	LET l_login = fgl_getenv("OPENID_email")
+&ifndef G310
 	IF l_login.getLength() < 2 THEN
 		LET l_login = "enter email address"
 	END IF
+&endif
 
 	CALL  gl_lib.gl_logIt("before input for login")
 	INPUT BY NAME l_login, l_pass ATTRIBUTES(UNBUFFERED, WITHOUT DEFAULTS)
@@ -193,7 +195,7 @@ PRIVATE FUNCTION login_ver_title(l_appname,l_ver)
 	IF w IS NOT NULL THEN
 		LET n = w.getNode()
 		CALL n.setAttribute("name", l_appname||"_"||l_ver )
-		CALL n.setAttribute("text", l_appname||" "||l_ver )
+		CALL w.setText( l_appname||"-"||l_ver||" Login" )
 		LET f = w.getForm()
 		CALL f.setElementText("titl",SFMT(%"Welcome to the %1",l_appname))
 	END IF
