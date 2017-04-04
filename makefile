@@ -22,7 +22,7 @@ run: $(PROG)
 	cd bin$(GENVER) && fglrun loginDemo.42r
 
 clean:
-	rm -rf bin* packages logs test
+	rm -rf bin* packages logs test/*.guilog test/test_loginDemo.4gl
 
 # -------------
 # GAR Files
@@ -79,13 +79,13 @@ launchurl: $(WARFILE)
 
 test/loginDemo.guilog: $(PROG)
 	if [ ! -d test ]; then \
-		mkdir test \
-	fi \
+		mkdir test; \
+	fi; \
 	cd bin$(GENVER) && fglrun --start-guilog=../$@ loginDemo.42r
 
 test/test_loginDemo.4gl: test/loginDemo.guilog
-	cd test \
-	rm -f test_loginDemo.4gl \
+	cd test; \
+	rm -f test_loginDemo.4gl; \
 	java com.fourjs.ggc.generator.GhostGenerator loginDemo.guilog com.fourjs.ggc.generator.BDLSimpleProducer test_loginDemo.4gl
 
 bin$(GENVER)/test_loginDemo.42m: test/test_loginDemo.4gl
