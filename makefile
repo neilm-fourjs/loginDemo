@@ -6,21 +6,23 @@ export FGLRESOURCEPATH=../etc
 export FGLPROFILE=../etc/profile
 export FGLSQLDEBUG=0
 export FGLCOVERAGE=0
+export CLASSPATH=$(FGLDIR)/testing_utilities/ggc/ggc.jar:$(FGLDIR)/lib/fgl.jar
 APPNAME=logindemo
 GARNAME=loginDemo$(GENVER)
 GARFILE=packages/$(GARNAME).gar
 WARFILE=packages/loginDemo310.war
+PROG=bin$(GENVER)/loginDemo.42r
 
-all: build gar
+all: $(PROG) gar
 
-build:
+$(PROG):
 	gsmake loginDemo$(GENVER).4pw
 
-run: bin$(GENVER)/loginDemo.42r
+run: $(PROG)
 	cd bin$(GENVER) && fglrun loginDemo.42r
 
 clean:
-	rm -rf bin* packages logs
+	rm -rf bin* packages logs test
 
 # -------------
 # GAR Files
@@ -71,4 +73,26 @@ runwar: $(WARFILE)
 
 launchurl: $(WARFILE)
 	google-chrome	http://localhost:8080/$(GARNAME)/ua/r/$(APPNAME)
+
+# -------------------
+# Genero Ghost Client
+
+test/loginDemo.guilog: $(PROG)
+	if [ ! -d test ]; then \
+		mkdir test \
+	fi \
+	cd bin$(GENVER) && fglrun --start-guilog=../$@ loginDemo.42r
+
+test/test_loginDemo.4gl: test/loginDemo.guilog
+	cd test \
+	rm -f test_loginDemo.4gl \
+	java com.fourjs.ggc.generator.GhostGenerator loginDemo.guilog com.fourjs.ggc.generator.BDLSimpleProducer test_loginDemo.4gl
+
+bin$(GENVER)/test_loginDemo.42m: test/test_loginDemo.4gl
+	cd bin$(GENVER) && fglcomp ../test/test_loginDemo.4gl
+
+runtest: bin$(GENVER)/test_loginDemo.42m
+	cd bin$(GENVER) && fglrun test_loginDemo.42m "fglrun loginDemo.42r"
+
+#	cd test && fglrun test_loginDemo.42m http://localhost:6394/ua/r/loginDemo
 
