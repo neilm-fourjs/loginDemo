@@ -12,17 +12,28 @@ GARNAME=loginDemo$(GENVER)
 GARFILE=packages/$(GARNAME).gar
 WARFILE=packages/loginDemo310.war
 PROG=bin$(GENVER)/loginDemo.42r
+SRC=\
+	src/crypt.4gl \
+	src/gl_lib.4gl \
+	src/lib_login.4gl \
+	src/lib_secure.4gl \
+	src/logindemo.4gl \
+	src/logindemo.per \
+	src/login.per \
+	src/mk_db.4gl \
+	src/new_acct.per \
+	src/schema.inc 
 
 all: $(PROG) gar
 
-$(PROG):
+$(PROG): $(SRC)
 	gsmake loginDemo$(GENVER).4pw
 
 run: $(PROG)
 	cd bin$(GENVER) && fglrun loginDemo.42r
 
 clean:
-	rm -rf bin* packages logs test/*.guilog test/test_loginDemo.4gl
+	rm -rf bin* packages logs test/*.guilog test/test_loginDemo.4gl src/*.cov
 
 # -------------
 # GAR Files
@@ -96,3 +107,12 @@ runtest: bin$(GENVER)/test_loginDemo.42m
 
 #	cd test && fglrun test_loginDemo.42m http://localhost:6394/ua/r/loginDemo
 
+# -------------------
+# Converage
+
+runcov: $(PROG)
+	cd bin$(GENVER) && FGLCOV=1 fglrun loginDemo.42r; \
+	mv *.cov ../src; \
+	cd ../src; \
+	fglrun --merge-cov logindemo.4gl; \
+	cat logindemo.4gl.cov

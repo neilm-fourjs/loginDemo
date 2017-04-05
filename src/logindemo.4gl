@@ -58,7 +58,7 @@ FUNCTION do_login()
 	LET int_flag = FALSE
 	WHILE NOT int_flag
 
--- CALL THE LOGIN LIBRARY FUNCTION TO GET A VALID LOGIN EMAIL ADDRESS.
+-- Call the login library function to get a valid login email address.
 		LET l_login = lib_login.login(APP, VER, TRUE)
 
 		DISPLAY "Login:",l_login

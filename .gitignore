@@ -6,6 +6,7 @@
 # project files
 *.4pwvs
 *.4pwdb
+*.4pwcfg
 
 # schemas
 *.sch
