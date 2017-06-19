@@ -33,7 +33,7 @@ DEFINE m_doc xml.domDocument
 DEFINE m_user_node, m_pass_node xml.domNode
 DEFINE m_file STRING
 
-CONSTANT DEFPASSLEN=16
+CONSTANT C_DEFPASSLEN=16
 CONSTANT C_SYMBOLS = "!$%^&*,.;@#?<>"
 CONSTANT C_SHA_ITERATIONS=64
 --------------------------------------------------------------------------------
@@ -44,19 +44,20 @@ CONSTANT C_SHA_ITERATIONS=64
 #+
 #+ @return String - password
 FUNCTION glsec_genPassword()
-	DEFINE l_pass CHAR(DEFPASSLEN)
+	DEFINE l_pass CHAR(C_DEFPASSLEN)
 	DEFINE x,y SMALLINT
 -- because it's base64 encoded it will return 16 chars or larger!!
 	WHILE TRUE
-		LET l_pass = security.RandomGenerator.CreateRandomString( DEFPASSLEN )
-		FOR x = 1 TO DEFPASSLEN -- make sure we have at least one number
+		LET l_pass = security.RandomGenerator.CreateRandomString( C_DEFPASSLEN )
+		FOR x = 1 TO C_DEFPASSLEN -- make sure we have at least one number
 			IF l_pass[x] MATCHES "[0-9]" THEN EXIT WHILE END IF
 		END FOR
 	END WHILE
 -- Add a random symbol to the random string.
 	CALL util.math.srand()
-	LET x = util.math.rand(DEFPASSLEN)
+	LET x = util.math.rand(C_DEFPASSLEN - 1) + 1
 	LET y = util.math.rand( C_SYMBOLS.getLength() )
+	DISPLAY "X:",x, " Y:",y
 	LET l_pass[x] = C_SYMBOLS.getCharAt(y)
 --	DISPLAY "Pass:",l_pass
 	RETURN l_pass
