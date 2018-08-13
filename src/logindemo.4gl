@@ -79,7 +79,7 @@ END FUNCTION
 #+ Create a new account.
 FUNCTION new_acct()
 	DEFINE l_acc RECORD LIKE accounts.*
-
+	DEFINE l_rules STRING
 	LET l_acc.acct_id = 0
 	LET l_acc.acct_type = 1
 	LET l_acc.active = TRUE
@@ -88,6 +88,10 @@ FUNCTION new_acct()
 
 	OPEN WINDOW new_acct WITH FORM "new_acct"
 
+	LET l_acc.login_pass = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+	LET l_rules = lib_secure.glsec_passwordRules( LENGTH(l_acc.login_pass) )
+	DISPLAY BY NAME l_rules
+	LET l_acc.login_pass = NULL
 	INPUT BY NAME l_acc.* ATTRIBUTES(WITHOUT DEFAULTS, FIELD ORDER FORM, UNBUFFERED)
 		AFTER FIELD email
 			IF lib_login.sql_checkEmail(l_acc.email) THEN
@@ -98,6 +102,12 @@ FUNCTION new_acct()
 			IF l_acc.pass_expire < (TODAY + 1 UNITS MONTH) THEN
 				ERROR %"Password expire date can not be less than 1 month."
 				NEXT FIELD pass_expire
+			END IF
+		AFTER FIELD login_pass
+			LET l_rules = lib_secure.glsec_isPasswordLegal(l_acc.login_pass CLIPPED)
+			IF l_rules != "Okay" THEN
+				ERROR l_rules
+				NEXT FIELD login_pass
 			END IF
 		BEFORE INPUT
 			CALL DIALOG.setFieldActive("accounts.acct_id",FALSE)

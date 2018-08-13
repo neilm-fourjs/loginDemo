@@ -9,8 +9,6 @@ IMPORT FGL gl_lib
 
 CONSTANT EMAILPROG = "sendemail.sh" --"fglrun sendemail.42r"
 
-CONSTANT c_sym = "!$%^&*,.;@#?<>" -- valid symbols for use in a password
-
 --------------------------------------------------------------------------------
 #+ Login function - One day when this program grows up it will have single signon 
 #+ then hackers only have one password to crack :)
@@ -210,12 +208,7 @@ PRIVATE FUNCTION passchg(l_login)
 	DEFINE l_acc RECORD LIKE accounts.*
 
 	LET l_pass1 = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
-	LET l_rules = %"The password must confirm to the following rules:\n",
-								"At least 8 characters, max is "||LENGTH(l_pass1)||"\n",
-								"At least 1 lower case letter\n",
-								"At least 1 upper case letter\n",
-								"At least 1 number\n",
-								"At least 1 symbol from the this list: ",c_sym
+	LET l_rules = lib_secure.glsec_passwordRules( LENGTH(l_pass1) )
 
 	LET w = ui.Window.getCurrent()
 	LET f = w.getForm()
@@ -225,7 +218,9 @@ PRIVATE FUNCTION passchg(l_login)
 	WHILE TRUE
 		INPUT BY NAME l_pass1, l_pass2
 			AFTER FIELD l_pass1
-				IF NOT pass_ok(l_pass1) THEN
+				LET l_rules = lib_secure.glsec_isPasswordLegal(l_pass1 CLIPPED)
+				IF l_rules != "Okay" THEN
+					ERROR l_rules
 					NEXT FIELD l_pass1
 				END IF
 		END INPUT
@@ -257,51 +252,3 @@ PRIVATE FUNCTION passchg(l_login)
 	RETURN TRUE
 END FUNCTION
 --------------------------------------------------------------------------------
-PRIVATE FUNCTION pass_ok(l_pass)
-	DEFINE l_pass LIKE accounts.login_pass
-	DEFINE l_gotUp, l_gotLow, l_gotNum, l_gotSym BOOLEAN
-	DEFINE x,y SMALLINT
-
-	IF l_pass IS NULL THEN
-		ERROR %"Password can't be NULL"
-		RETURN FALSE
-	END IF
-	IF LENGTH(l_pass) < 8 THEN
-		ERROR %"Password is less than 8 characters"
-		RETURN FALSE
-	END IF
-
-	LET l_gotNum = FALSE
-	LET l_gotUp = FALSE
-	LET l_gotLow = FALSE
-	LET l_gotSym = FALSE
-
-	DISPLAY "Pass:",l_pass
-	FOR x = 1 TO LENGTH(l_pass)
-		IF l_pass[x] >= "0" AND l_pass[x] <= "9" THEN LET l_gotNum = TRUE CONTINUE FOR END IF
-		IF l_pass[x] >= "A" AND l_pass[x] <= "Z" THEN LET l_gotUp = TRUE CONTINUE FOR END IF
-		IF l_pass[x] >= "a" AND l_pass[x] <= "z" THEN LET l_gotLow = TRUE CONTINUE FOR END IF
-		LET y = 1
-		WHILE y <= c_sym.getLength()
-			DISPLAY "Symbol check:",l_pass[x]," sym:",c_sym.getCharAt(y)
-			IF l_pass[x] = c_sym.getCharAt(y) THEN LET l_gotSym = TRUE CONTINUE FOR END IF
-			LET y = y + 1
-		END WHILE
-		ERROR %"Password contains an iilegal character:", l_pass[x]
-	END FOR
-
-	IF NOT l_gotUp OR NOT l_gotLow THEN
-		ERROR %"Password must contain a mix of upper and lower case letters."
-		RETURN FALSE
-	END IF
-	IF NOT l_gotNum THEN
-		ERROR %"Password must contain at least one number."
-		RETURN FALSE
-	END IF
-	IF NOT l_gotSym THEN
-		ERROR %"Password must contain at least one symbol ("||c_sym||")."
-		RETURN FALSE
-	END IF
-
-	RETURN TRUE
-END FUNCTION

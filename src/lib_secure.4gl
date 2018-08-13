@@ -33,8 +33,8 @@ DEFINE m_doc xml.domDocument
 DEFINE m_user_node, m_pass_node xml.domNode
 DEFINE m_file STRING
 
-CONSTANT C_DEFPASSLEN=16
-CONSTANT C_SYMBOLS = "!$%^&*,.;@#?<>"
+PUBLIC CONSTANT C_DEFPASSLEN=8
+PUBLIC CONSTANT C_SYMBOLS = "!$%^&*,.;@#?<>"
 CONSTANT C_SHA_ITERATIONS=64
 --------------------------------------------------------------------------------
 #+ Generate a random password that conforms to the follow set of rules:
@@ -193,6 +193,66 @@ FUNCTION glsec_chkPassword(l_pass,l_passhash,l_salt,l_hashtype)
 
 	CALL gl_logIt("Password checked failed.")
 	RETURN FALSE
+END FUNCTION
+--------------------------------------------------------------------------------
+#+ Validate that the password is legal.
+#+
+#+ @param l_pass Password to validate.
+#+ @returns String with "Okay" or an Error message is the password is not legal.
+FUNCTION glsec_isPasswordLegal( l_pass )
+	DEFINE l_pass STRING
+	DEFINE l_gotUp, l_gotLow, l_gotNum, l_gotSym BOOLEAN
+	DEFINE x,y SMALLINT
+
+	IF l_pass IS NULL THEN
+		RETURN %"Password can't be NULL"
+	END IF
+	IF l_pass.getLength() < C_DEFPASSLEN THEN
+		RETURN SFMT(%"Password is less than %1 characters",C_DEFPASSLEN)
+	END IF
+
+	LET l_gotNum = FALSE
+	LET l_gotUp = FALSE
+	LET l_gotLow = FALSE
+	LET l_gotSym = FALSE
+
+	--DISPLAY "Pass:",l_pass
+	FOR x = 1 TO LENGTH(l_pass)
+		IF l_pass.getCharAt(x) >= "0" AND l_pass.getCharAt(x) <= "9" THEN LET l_gotNum = TRUE CONTINUE FOR END IF
+		IF l_pass.getCharAt(x) >= "A" AND l_pass.getCharAt(x) <= "Z" THEN LET l_gotUp = TRUE CONTINUE FOR END IF
+		IF l_pass.getCharAt(x) >= "a" AND l_pass.getCharAt(x) <= "z" THEN LET l_gotLow = TRUE CONTINUE FOR END IF
+		LET y = 1
+		WHILE y <= C_SYMBOLS.getLength()
+			--DISPLAY "Symbol check:",l_pass[x]," sym:",c_sym.getCharAt(y)
+			IF l_pass.getCharAt(x) = C_SYMBOLS.getCharAt(y) THEN LET l_gotSym = TRUE CONTINUE FOR END IF
+			LET y = y + 1
+		END WHILE
+		ERROR %"Password contains an iilegal character:", l_pass.getCharAt(x)
+	END FOR
+
+	IF NOT l_gotUp OR NOT l_gotLow THEN
+		RETURN %"Password must contain a mix of upper and lower case letters."
+	END IF
+	IF NOT l_gotNum THEN
+		RETURN %"Password must contain at least one number."
+	END IF
+	IF NOT l_gotSym THEN
+		RETURN SFMT( %"Password must contain at least one symbol: %1.",C_SYMBOLS)
+	END IF
+
+	RETURN "Okay"
+END FUNCTION
+--------------------------------------------------------------------------------
+#+ Get the password rules as a string
+#+
+#+ @param l_max Max length of the password as stored in DB.
+#+ @returns string of the rules
+FUNCTION glsec_passwordRules( l_max )
+	DEFINE l_max INTEGER
+	RETURN SFMT( %"The password must confirm to the following rules:\n"||
+								"At least %1 characters, max is %2\n"||
+								"At least 1 lower case letter and 1 upper case letter\n"||
+								"At least 1 number and at least 1 symbol from the this list: %3",C_DEFPASSLEN,l_max,C_SYMBOLS)
 END FUNCTION
 --------------------------------------------------------------------------------
 #+ Get a string from base64 string or raise an error prompt

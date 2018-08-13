@@ -24,6 +24,10 @@ GRID
 [forcepwch |rd|b]
 [""]
 [passwd    |rp|p001                              ]
+[rules                                                            ]
+[                                                                 ]
+[                                                                 ]
+[                                                                 ]
 [passexp   |pe|p002             ]
 }
 END -- GRID
@@ -72,6 +76,7 @@ CHECKBOX a = accounts.active,VALUECHECKED=1,VALUEUNCHECKED=0,DEFAULT=1,NOT NULL;
 CHECKBOX b = accounts.forcepwchg, VALUECHECKED="Y", VALUEUNCHECKED="N",NOT NULL;
 
 BUTTONEDIT p001 = accounts.login_pass, INVISIBLE, VERIFY, NOT NULL, TABINDEX=8, ACTION=generate, IMAGE="fa-cog";
+TEXTEDIT rules = FORMONLY.l_rules, STRETCH=BOTH;
 DATEEDIT p002 = accounts.pass_expire, NOT NULL, TABINDEX=9;
 
 PHANTOM accounts.salt;
