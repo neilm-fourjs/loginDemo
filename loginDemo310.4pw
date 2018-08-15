@@ -98,4 +98,13 @@
       <File filePath="src/test.4gl"/>
     </Application>
   </Group>
+  <Group label="Package" language="Genero">
+    <Package binaryName="loginDemo310" description="LoginDemo310" label="loginDemo310" platform="Genero Application Server">
+      <DynamicProperty name="packageId" value="LoginDemo310"/>
+      <DynamicProperty name="packageLabel" value="LoginDemo310"/>
+      <Directory destinationDirectory="$(RootDir)/bin" label="bin" sourceDirectory="$(ProjectDir)/bin310"/>
+      <Directory destinationDirectory="$(RootDir)/etc" label="etc" sourceDirectory="$(ProjectDir)/etc"/>
+      <Directory label="xcf" sourceDirectory="$(ProjectDir)/gas310"/>
+    </Package>
+  </Group>
 </Project>
