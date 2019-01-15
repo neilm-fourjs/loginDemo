@@ -13,6 +13,9 @@
 	<Style name=".noborder">
 		<StyleAttribute name="border" value="none" />
 	</Style>
+	<Style name=".center">
+		<StyleAttribute name="position" value="center" />
+	</Style>
 	<Style name=".white">
 		<StyleAttribute name="textColor" value="white" />
 	</Style>
@@ -20,11 +23,12 @@
 		<StyleAttribute name="backgroundColor" value="transparent" />
 	</Style>
   <Style name=".big">
-    <StyleAttribute name="fontSize" value="16pt" />
+    <StyleAttribute name="fontSize" value="1.5em" />
   </Style>
-	<Style name=".disabled">
-		<StyleAttribute name="textColor" value="#B7B7CC" />
-	</Style>
+  <Style name=".small">
+    <StyleAttribute name="fontSize" value=".8em" />
+  </Style>
+
 	<Style name=".titl">
 		<StyleAttribute name="fontWeight" value="bold" />
 		<StyleAttribute name="fontSize" value="1.5em" />
@@ -34,24 +38,11 @@
 		<StyleAttribute name="fontSize" value=".8em" />
 		<StyleAttribute name="textColor" value="red" />
 	</Style>
-	<Style name=".font8">
-		<StyleAttribute name="fontSize" value="7pt" />
-	</Style>
-	<Style name=".font6">
-		<StyleAttribute name="fontSize" value="6pt" />
-	</Style>
-	<Style name=".f5">
-		<StyleAttribute name="fontSize" value="0.5em" />
-	</Style>
-	<Style name=".f15">
-		<StyleAttribute name="fontSize" value="1.5em" />
-	</Style>
+
 	<Style name=".bold">
 		<StyleAttribute name="fontWeight" value="bold" />
 	</Style>
-	<Style name="Group.login_g">
-		<!-- StyleAttribute name="backgroundColor" value="#F2F2F9" /-->
-	</Style>
+
 	<Style name=".login">
 		<!--StyleAttribute name="backgroundColor" value="white" /-->
 		<StyleAttribute name="textColor" value="black" />
@@ -62,29 +53,7 @@
 		<StyleAttribute name="toolBarPosition" value="none" />
 		<StyleAttribute name="statusBarType" value="panels1" />
 	</Style>
-	<Style name=".grad1">
-		<StyleAttribute name="backgroundColor"         value="#F2F2F9" />
-		<StyleAttribute name="backgroundGradientType"  value="linear|top|bottom" />
-		<StyleAttribute name="backgroundGradientColor" value="#B7B7CC" />
-		<StyleAttribute name="textColor" value="black" />
-	</Style>
-	<Style name=".grad2">
-		<StyleAttribute name="backgroundColor"         value="#F2F2F9" />
-		<StyleAttribute name="backgroundGradientType"  value="linear|bottom|top" />
-		<StyleAttribute name="backgroundGradientColor" value="#B7B7CC" />
-	</Style>
-	<Style name="Group.grp1">
-		<StyleAttribute name="backgroundColor"         value="#F7F7FF" />
-		<StyleAttribute name="backgroundGradientType"  value="linear|top|bottom" />
-		<StyleAttribute name="backgroundGradientColor" value="#C5C5CF" />
-	</Style>
 
-	<Style name="Edit:inactive">
-		<StyleAttribute name="backgroundColor" value="#EEEEFF" />
-	</Style>
-	<Style name="DateEdit:inactive">
-		<StyleAttribute name="backgroundColor" value="#EEEEFF" />
-	</Style>
 	<Style name="Label">
 		<StyleAttribute name="textColor" value="darkblue" />
 	</Style>
@@ -98,7 +67,6 @@
 		<StyleAttribute name="scaleIcon" value="32px" />
 	</Style>
 	<Style name="Button.login">
-		<StyleAttribute name="backgroundColor" value="#B7B7CC" />
 		<StyleAttribute name="textColor" value="darkblue" />
 	</Style>
 	<Style name="Button.small">

@@ -7,6 +7,9 @@
 #+
 
 IMPORT FGL lib_secure
+
+# Login Demo Program
+
 IMPORT FGL lib_login
 IMPORT FGL gl_lib
 
@@ -25,18 +28,19 @@ MAIN
 
 	CALL gl_lib.db_connect()
 
+	DISPLAY "Welcome - please login" TO wel
 	DISPLAY "DB:"||gl_lib.m_dbname TO msg1
-	DISPLAY "IMG:"||NVL(fgl_getEnv("FGLIMAGEPATH"),"NULL") TO msg2
+	DISPLAY "IMGPATH:"||NVL(fgl_getEnv("FGLIMAGEPATH"),"NULL") TO msg2
 
 	MENU
 		BEFORE MENU
-			--CALL DIALOG.setActionActive("shwcred",FALSE)
+			CALL DIALOG.setActionActive("shwcred",FALSE)
 			CALL DIALOG.setActionActive("updcred",FALSE)
 		ON ACTION close EXIT MENU
 		ON ACTION login
 			LET l_login = do_login()
 			IF l_login IS NOT NULL THEN
-				DISPLAY SFMT(%"Welcome %1",l_login) TO msg1
+				DISPLAY SFMT(%"Welcome %1",l_login) TO wel
 				CALL DIALOG.setActionActive("login", FALSE)
 				CALL DIALOG.setActionActive("shwcred",TRUE)
 				CALL DIALOG.setActionActive("updcred",TRUE)
@@ -133,6 +137,8 @@ FUNCTION new_acct()
 END FUNCTION
 --------------------------------------------------------------------------------
 #+ Show the creditials from the encrypted xml file.
+#+
+#+ @param l_upd Update the creditials: True/False - NOT YET IMPLEMENTED
 FUNCTION creds( l_upd )
 	DEFINE l_upd BOOLEAN
 	DEFINE l_type,l_user, l_pass STRING
@@ -149,7 +155,6 @@ END FUNCTION
 #+ @param l_cb A valid ui.ComboBox object
 FUNCTION pop_combo(l_cb)
 	DEFINE l_cb ui.ComboBox
-
 	CASE l_cb.getColumnName()
 		WHEN "acct_type"
 			CALL l_cb.addItem(1,%"Normal User")

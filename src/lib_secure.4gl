@@ -57,7 +57,6 @@ FUNCTION glsec_genPassword()
 	CALL util.math.srand()
 	LET x = util.math.rand(C_DEFPASSLEN - 1) + 1
 	LET y = util.math.rand( C_SYMBOLS.getLength() )
-	DISPLAY "X:",x, " Y:",y
 	LET l_pass[x] = C_SYMBOLS.getCharAt(y)
 --	DISPLAY "Pass:",l_pass
 	RETURN l_pass

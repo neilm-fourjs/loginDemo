@@ -2,31 +2,48 @@
 #+ Login demo main form
 
 TOOLBAR
-	ITEM quit (TEXT="Quit", IMAGE="fa-power-off")
-	ITEM login (TEXT="Login", IMAGE="fa-unlock")
-	ITEM shwcred (TEXT="Show Credentials", IMAGE="fa-key")
-	ITEM updcred (TEXT="Update Credentials", IMAGE="fa-key")
+	ITEM quit (TEXT=%"Quit", IMAGE="fa-power-off")
+	ITEM login (TEXT=%"Login", IMAGE="fa-unlock")
+	ITEM shwcred (TEXT=%"Show Credentials", IMAGE="fa-key")
+	ITEM updcred (TEXT=%"Update Credentials", IMAGE="fa-key")
 END -- TB
-LAYOUT (TEXT="A Login Demo", WINDOWSTYLE="main2", IMAGE="fa-mortar-board")
+
+LAYOUT (TEXT=%"A Login Demo", WINDOWSTYLE="main2", IMAGE="fa-mortar-board")
 GRID
 {
-This is a simple Login demo program.
-[a]
-[msg1                                    ]
-[msg2                                    ]
+[info                                      ]
+[                                          ]
+[note                                      ]
+--------------------------------------------
+[:                  :wel:                 :]
+[sp1                :a  :sp2               ]
+
 [""]
 <G "Secured Credentials from cred.xml file">
- Type:    [f000                          ]
- Username:[f001                          ]
- Password:[f002                          ]
+ [l_typ    |f000                          ]
+ [l_usr    |f001                          ]
+ [l_pwd    |f002                          ]
+<                                          >
+[msg1                                      ]
+[msg2                                      ]
 }
 END -- GRID
 
 ATTRIBUTES
-LABEL msg1 = FORMONLY.msg1, SIZEPOLICY=DYNAMIC, STYLE="big";
-LABEL msg2 = FORMONLY.msg2, SIZEPOLICY=DYNAMIC;
-IMAGE a : a IMAGE="fa-smile-o", STYLE="noborder", AUTOSCALE;
+LABEL info : info, TEXT=%"This is a simple Login demo program.\nClick the 'Login' toolbar item to login.";
+LABEL note : note, TEXT=%"NOTE: demo login: test@test.com / T3st.T3st", STYLE="small";
+LABEL wel = FORMONLY.wel, SIZEPOLICY=DYNAMIC, STYLE="big";
 
+IMAGE sp1 : spacer, IMAGE="fa-fw", STRETCH=X, STYLE="noborder";
+IMAGE a : a IMAGE="fa-mortar-board",SIZEPOLICY=DYNAMIC, STYLE="noborder center", AUTOSCALE, STRETCH=BOTH;
+IMAGE sp2 : spacer, IMAGE="fa-fw", STRETCH=X, STYLE="noborder";
+
+LABEL l_typ : l_typ, TEXT=%"Type:", JUSTIFY=RIGHT;
+LABEL l_usr : l_usr, TEXT=%"Username:", JUSTIFY=RIGHT;
+LABEL l_pwd : l_pwd, TEXT=%"Password:", JUSTIFY=RIGHT;
 f000 = FORMONLY.cred_type;
 f001 = FORMONLY.username;
 f002 = FORMONLY.password;
+
+LABEL msg1 = FORMONLY.msg1, SIZEPOLICY=DYNAMIC, STYLE="small";
+LABEL msg2 = FORMONLY.msg2, SIZEPOLICY=DYNAMIC, STYLE="small";

@@ -132,8 +132,8 @@ END FUNCTION
 #+ @param l_mess Message to write to audit file.
 FUNCTION gl_logIt( l_mess ) --{{{
 	DEFINE l_mess, l_pid,l_fil STRING
-	--DEFINE x,y SMALLINT
 	DEFINE c base.Channel
+
 	LET l_pid = fgl_getPID()
 	--DISPLAY base.application.getProgramName()||": "||NVL(l_mess,"NULL")
 	LET c = base.Channel.create()
@@ -152,9 +152,8 @@ FUNCTION gl_logIt( l_mess ) --{{{
 		LET l_mess = CURRENT||"|"||NVL(l_fil,"NULL")||"|"||l_mess
 	END IF
 	
-	DISPLAY "Log:",l_mess
+--	DISPLAY "Log:",l_mess
 	CALL c.writeLine(l_mess)
-
 	CALL c.close()
 END FUNCTION --}}}
 --------------------------------------------------------------------------------

@@ -6,6 +6,7 @@ IMPORT FGL lib_secure
 
 MAIN
 	DEFINE l_hash_type, l_login_pass, l_salt, l_pass_hash, l_email VARCHAR(128)
+	DEFINE l_expires DATE
 
 	CALL gl_lib.db_connect()
 
@@ -13,7 +14,8 @@ MAIN
 		DISPLAY "Dropping accounts table ..."
 		DROP TABLE accounts
 	CATCH
-		DISPLAY "accounts doesn't exist."
+		DISPLAY STATUS,":",SQLERRMESSAGE
+		DISPLAY "accounts drop failed."
 	END TRY
 
 	TRY
@@ -45,10 +47,10 @@ MAIN
 	LET l_hash_type = lib_secure.glsec_getHashType()
 	LET l_salt = lib_secure.glsec_genSalt(l_hash_type)
 	LET l_pass_hash = lib_secure.glsec_genPasswordHash( l_login_pass, l_salt, l_hash_type )
-
+	LET l_expires = TODAY+365
 	TRY
 		INSERT INTO accounts VALUES(1,"Mr","Test","Testing","Tester",l_email,"A test account",0,1,"N",
-			l_hash_type, l_login_pass, l_salt, l_pass_hash, TODAY+365)
+			l_hash_type, l_login_pass, l_salt, l_pass_hash, l_expires)
 		DISPLAY "Test Account Inserted: "||l_email||" / "||l_login_pass||" with "||l_hash_type||" hash."
 	CATCH
 		DISPLAY "Insert test account failed!\n",STATUS,":",SQLERRMESSAGE

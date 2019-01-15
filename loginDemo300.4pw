@@ -54,13 +54,15 @@
   <LanguageList version="1.0"/>
   <PlatformList version="1.0"/>
   <Group compilerOptions="-DG300" environment="value:FGLPROFILE=$(ProjectDir)/etc/profile||value:DBNAME=logindemo" label="LoginDemo" language="Genero" targetDirectory="$(ProjectDir)/bin300">
-    <Application binaryName="crypt" dependencies="14000" id="168340406" label="crypt">
-      <File filePath="src/crypt.4gl"/>
-    </Application>
-    <Library binaryName="Databases" id="1986" label="Databases">
-      <File filePath="etc/logindemo.4db"/>
-      <File filePath="src/schema.inc"/>
-    </Library>
+    <Group label="Database">
+      <Library binaryName="Databases" id="1986" label="Databases">
+        <File filePath="etc/logindemo.4db"/>
+        <File filePath="src/schema.inc"/>
+      </Library>
+      <Application binaryName="mk_db" dependencies="1986||1831529840||14000" id="1319958480" label="mk_db">
+        <File filePath="src/mk_db.4gl"/>
+      </Application>
+    </Group>
     <Library binaryName="etc" id="2084719298" label="etc">
       <File filePath="etc/default.4ad"/>
       <File filePath="etc/default.4st"/>
@@ -81,8 +83,13 @@
       <File filePath="src/logindemo.per"/>
       <File filePath="src/new_acct.per"/>
     </Application>
-    <Application binaryName="mk_db" dependencies="1986||1831529840||14000" id="1319958480" label="mk_db">
-      <File filePath="src/mk_db.4gl"/>
-    </Application>
+    <Group label="Utils">
+      <Application binaryName="crypt" dependencies="14000" id="168340406" label="crypt">
+        <File filePath="src/crypt.4gl"/>
+      </Application>
+      <Application binaryName="test" commandLineArguments="My.T3st.Passw0rd" id="1295607431" label="test">
+        <File filePath="src/test.4gl"/>
+      </Application>
+    </Group>
   </Group>
 </Project>
