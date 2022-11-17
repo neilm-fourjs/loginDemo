@@ -3,9 +3,7 @@ Security Library Demo
 
 A simple login style demo using encrypted passwords and an encrypted xml config file
 
-With Genero 2.50 & 3.00 the passwords are hashed using SHA512 with a salt and multiple iterations
-
-With Genero 3.10 the passwords are hashed using BCRYPT ( Blowfish )
+With Genero 3.10+ the passwords are hashed using BCRYPT ( Blowfish )
 
 ## Structure of folders
 * src: Genero source code
@@ -21,7 +19,7 @@ This prject requires Genero Studio 2.50 or greater installed and licensed.
 
 Either use GeneroStudios main UI or build from command line using:
 ```
-gsmake loginDemo300.4pw
+gsmake loginDemo320.4pw
 ```
 
 ## Building Extra - Linux / Mac ( assuming gnu make installed )
@@ -39,7 +37,7 @@ $ make runwar
 ## Running
 You can either run from GeneroStudio UI or run from the command line using:
 ```
-$ cd bin300
+$ cd bin320
 $ FGLRESOURCEPATH=../etc; fglrun loginDemo.42r
 ```
 
