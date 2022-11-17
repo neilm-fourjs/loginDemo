@@ -1,6 +1,6 @@
 
 ifndef GENVER
-export GENVER=300
+export GENVER=320
 endif
 export FGLRESOURCEPATH=../etc
 export FGLPROFILE=../etc/profile
@@ -9,8 +9,8 @@ export FGLCOVERAGE=0
 export CLASSPATH=$(FGLDIR)/testing_utilities/ggc/ggc.jar:$(FGLDIR)/lib/fgl.jar
 APPNAME=logindemo
 GARNAME=loginDemo$(GENVER)
-GARFILE=packages/$(GARNAME).gar
-WARFILE=packages/loginDemo310.war
+GARFILE=distbin/$(GARNAME).gar
+WARFILE=packages/loginDemo$(GENVER).war
 PROG=bin$(GENVER)/loginDemo.42r
 SRC=\
 	src/crypt.4gl \
@@ -43,37 +43,22 @@ packages:
 
 gar: $(GARFILE)
 
-packages/loginDemo$(GENVER).gar: packages bin$(GENVER)/loginDemo.42r
+$(GARFILE): packages bin$(GENVER)/loginDemo.42r
 	$(info Building Genero Archive ...)
-	@cp gas$(GENVER)/MANIFEST .
-	@zip -qr $(GARFILE) MANIFEST gas$(GENVER)/g*.xcf bin$(GENVER)/* etc/.creds.xml etc/*.4?? etc/*.db etc/profile
-	@rm MANIFEST
-
-# ----------------------
-# GAS Deploy 2.50 / 3.00
+	gsmake -t loginDemo$(GENVER) loginDemo$(GENVER).4pw
 
 undeploy:
-	gasadmin --disable-archive $(GARNAME)
-	gasadmin --undeploy-archive $(GARNAME)
-
-deploy: $(GARFILE)
-	gasadmin --deploy-archive $(GARFILE)
-	gasadmin --enable-archive $(GARNAME)
-
-# ----------------------
-# GAS Deploy 3.10
-
-undeploy310:
 	gasadmin gar --disable-archive $(GARNAME)
 	gasadmin gar --undeploy-archive $(GARNAME)
 
-deploy310: $(GARFILE)
+deploy: $(GARFILE)
 	gasadmin gar --deploy-archive $(GARFILE)
 	gasadmin gar --enable-archive $(GARNAME)
 
 
 # -------------
 # JGAS War
+war: $(WARFILE)
 
 $(WARFILE): $(GARFILE)
 	$(info Building Genero WAR File ...)

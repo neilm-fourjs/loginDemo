@@ -2,17 +2,10 @@
 #+ * Handle an encrypted XML config file
 #+ * Encrypt / Decrypt a password & salt pair for storing in a databaase
 #+
-#+ For Genero 3.00:
-#+	password encrypted using SHA512 ( with salt + multiple iterations )
-#+	you need to store the Salt and the Password hash
 #+
-#+ For Genero 3.10:
+#+ For Genero 3.10 and above
 #+	password encrypted using bcrypt ( Blowfish )
 #+	you only need to store the Password hash ( bcrypt included salt in hash )
-#+
-#+ WARNING: the two encryption methods are NOT compatible - so if you start the 3.00 then
-#+ upgrade to Genero 3.10 and want to use bcrypt you WILL have to regenerate all the password
-#+ hashes for your existing accounts!
 #+
 #+ This module initially written by: Neil J.Martin ( neilm@4js.com ) 
 #+
@@ -22,11 +15,6 @@ IMPORT os
 IMPORT security
 IMPORT util
 IMPORT FGL gl_lib
-
--- For Genero 3.10 we are going to default to BCRYPT
-&ifdef G310
-&define BCRYPT
-&endif
 
 -- Private variables:
 DEFINE m_doc xml.domDocument
@@ -66,11 +54,7 @@ END FUNCTION
 #+
 #+ @return string
 FUNCTION glsec_getHashType()
-&ifdef G310
 	RETURN "BCRYPT"
-&else
-	RETURN "SHA512"
-&endif
 END FUNCTION
 --------------------------------------------------------------------------------
 #+ Generate a salt string
@@ -83,7 +67,6 @@ FUNCTION glsec_genSalt(l_hashtype)
 		LET l_hashtype = glsec_getHashType()
 	END IF
 	CASE l_hashtype
-&ifdef G310
 		WHEN "BCRYPT"
 			CALL gl_logIt( "Generating BCrypt Salt" )
 			TRY
@@ -91,8 +74,7 @@ FUNCTION glsec_genSalt(l_hashtype)
 			CATCH
 				CALL gl_logIt( "ERROR:"||STATUS||":"||SQLCA.SQLERRM)
 			END TRY
-&endif
-		WHEN "SHA512"
+		WHEN "SHA512" -- legacy no longer required.
 			CALL gl_logIt( "Generating Random Salt" )
 			LET l_salt = security.RandomGenerator.CreateRandomString( 16 )
 		OTHERWISE
@@ -125,12 +107,10 @@ FUNCTION glsec_genPasswordHash(l_pass,l_salt,l_hashtype)
 	END IF
 	TRY
 		CASE l_hashtype
-&ifdef G310
 			WHEN "BCRYPT"
 				CALL gl_logIt( "Generating BCrypt HashPassword" )
 				LET l_hash = Security.BCrypt.HashPassword(l_pass, l_salt)
-&endif
-			WHEN "SHA512"
+			WHEN "SHA512" -- legacy no longer required.
 				CALL gl_logIt( "Generating "||l_hashtype||" HashPassword" )
 				LET l_hash = l_pass||l_salt
 				FOR x = 1 TO C_SHA_ITERATIONS
@@ -166,7 +146,6 @@ FUNCTION glsec_chkPassword(l_pass,l_passhash,l_salt,l_hashtype)
 		LET l_hashtype = glsec_getHashType()
 	END IF
 	CASE l_hashtype
-&ifdef G310
 		WHEN "BCRYPT"
 			CALL gl_logIt("checking password using BCRYPT")
 			TRY
@@ -177,8 +156,7 @@ FUNCTION glsec_chkPassword(l_pass,l_passhash,l_salt,l_hashtype)
 			CATCH
 				CALL gl_logIt( "ERROR:"||STATUS||":"||SQLCA.SQLERRM)
 			END TRY
-&endif
-		WHEN "SHA512"
+		WHEN "SHA512" -- legacy no longer required.
 			CALL gl_logIt("checking password using "||l_hashtype)
 			LET l_hash = glsec_genPasswordHash(l_pass, l_salt, l_hashtype)
 			IF l_hash = l_passhash THEN
@@ -353,6 +331,7 @@ FUNCTION glsec_getCreds(l_typ)
 	END TRY
 
 	LET l_list = m_doc.selectByXPath("//"||l_typ||"/user","")
+    DISPLAY m_doc.saveToString()
 	IF l_list.getCount() < 1 THEN 
 		--DISPLAY "Failed to find:",l_typ
 	ELSE
@@ -438,7 +417,7 @@ PRIVATE FUNCTION secchk(l_s)
 END FUNCTION
 --------------------------------------------------------------------------------
 -- obfuscate our key
-{PRIVATE} FUNCTION seclogit()
+FUNCTION seclogit()
 	DEFINE s1,s2,s3,s4 STRING
 --TODO: fixme
 	LET s1 = ASCII(62),ASCII(68),ASCII(62),ASCII(64),ASCII(66),ASCII(67),ASCII(69),ASCII(68),ASCII(68),ASCII(67),ASCII(66),ASCII(62),ASCII(62),ASCII(60),ASCII(60),ASCII(62)
