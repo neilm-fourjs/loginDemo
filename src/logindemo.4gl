@@ -151,6 +151,16 @@ FUNCTION creds(l_upd)
 	DISPLAY l_type TO cred_type
 	DISPLAY l_user TO username
 	DISPLAY l_pass TO password
+	LET int_flag = FALSE
+	IF l_upd THEN
+		INPUT l_user, l_pass FROM username, password ATTRIBUTES( WITHOUT DEFAULTS )
+		IF NOT int_flag THEN
+			IF NOT lib_secure.glsec_updCreds(l_type, l_user, l_pass) THEN
+				ERROR "Failed to update Creds"
+			END IF
+		END IF
+	END IF
+	LET int_flag = FALSE
 END FUNCTION
 --------------------------------------------------------------------------------
 #+ Populate the combox objects

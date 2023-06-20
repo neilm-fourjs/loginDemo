@@ -1,4 +1,4 @@
 
-dbi.default.driver = "dbmsqt3xx"
+dbi.default.driver = "dbmsqt"
 #dbi.default.driver = "dbmifx9x"
 

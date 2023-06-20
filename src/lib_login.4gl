@@ -22,7 +22,7 @@ PUBLIC FUNCTION login(l_appname, l_ver, l_allow_new)
 	DEFINE l_login, l_pass  STRING
 	DEFINE f                ui.Form
 
-	LET INT_FLAG = FALSE
+	LET int_flag = FALSE
 	CALL gl_lib.gl_logIt("Allow New:" || l_allow_new || " Ver:" || l_ver)
 	OPTIONS INPUT NO WRAP
 
