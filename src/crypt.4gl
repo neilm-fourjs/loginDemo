@@ -28,7 +28,7 @@ FUNCTION encrypt(l_file_in, l_file_out)
 	DEFINE l_file_in, l_file_out STRING
 
 	LET l_myKey = lib_secure.seclogit()
-	DISPLAY "Encrypting with :", l_mykey
+	DISPLAY "Encrypting with :", l_myKey
 
 	LET doc = xml.DomDocument.Create()
 	# Notice that white spaces are significant in crytography,

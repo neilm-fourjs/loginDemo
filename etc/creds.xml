@@ -1,10 +1,13 @@
 <Secure>
+	<db>
+		<password>ThisIsMyDBPassword</password>
+	</db>
 	<email>
 		<user>me@test.com</user>
-		<password>ThisIsMyPassword</password>
+		<password>ThisIsMyEmailPassword</password>
 	</email>
 	<sms>
 		<user>me</user>
-		<password>ThisIsMyPassword</password>
+		<password>ThisIsMySMSPassword</password>
 	</sms>
 </Secure>

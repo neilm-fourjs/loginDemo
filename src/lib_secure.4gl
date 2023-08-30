@@ -3,7 +3,7 @@
 #+ * Encrypt / Decrypt a password & salt pair for storing in a databaase
 #+
 #+
-#+ For Genero 3.10 and above
+#+ For Genero 3.20 and above
 #+	password encrypted using bcrypt ( Blowfish )
 #+	you only need to store the Password hash ( bcrypt included salt in hash )
 #+
@@ -17,8 +17,8 @@ IMPORT util
 IMPORT FGL gl_lib
 
 -- Private variables:
-DEFINE m_doc                    xml.domDocument
-DEFINE m_user_node, m_pass_node xml.domNode
+DEFINE m_doc                    xml.DomDocument
+DEFINE m_user_node, m_pass_node xml.DomNode
 DEFINE m_file                   STRING
 
 PUBLIC CONSTANT C_DEFPASSLEN = 8
@@ -44,9 +44,9 @@ FUNCTION glsec_genPassword()
 		END FOR
 	END WHILE
 -- Add a random symbol to the random string.
-	CALL util.math.srand()
-	LET x         = util.math.rand(C_DEFPASSLEN - 1) + 1
-	LET y         = util.math.rand(C_SYMBOLS.getLength())
+	CALL util.Math.srand()
+	LET x         = util.Math.rand(C_DEFPASSLEN - 1) + 1
+	LET y         = util.Math.rand(C_SYMBOLS.getLength())
 	LET l_pass[x] = C_SYMBOLS.getCharAt(y)
 --	DISPLAY "Pass:",l_pass
 	RETURN l_pass
@@ -111,7 +111,7 @@ FUNCTION glsec_genPasswordHash(l_pass, l_salt, l_hashtype)
 		CASE l_hashtype
 			WHEN "BCRYPT"
 				CALL gl_logIt("Generating BCrypt HashPassword")
-				LET l_hash = Security.BCrypt.HashPassword(l_pass, l_salt)
+				LET l_hash = security.BCrypt.HashPassword(l_pass, l_salt)
 			WHEN "SHA512" -- legacy no longer required.
 				CALL gl_logIt("Generating " || l_hashtype || " HashPassword")
 				LET l_hash = l_pass || l_salt
@@ -151,7 +151,7 @@ FUNCTION glsec_chkPassword(l_pass, l_passhash, l_salt, l_hashtype)
 		WHEN "BCRYPT"
 			CALL gl_logIt("checking password using BCRYPT")
 			TRY
-				IF Security.BCrypt.CheckPassword(l_pass, l_passhash) THEN
+				IF security.BCrypt.CheckPassword(l_pass, l_passhash) THEN
 					CALL gl_logIt("Password checked okay.")
 					RETURN TRUE
 				END IF
@@ -196,7 +196,7 @@ FUNCTION glsec_isPasswordLegal(l_pass)
 	LET l_gotSym = FALSE
 
 	--DISPLAY "Pass:",l_pass
-	FOR x = 1 TO LENGTH(l_pass)
+	FOR x = 1 TO l_pass.getLength()
 		IF l_pass.getCharAt(x) >= "0" AND l_pass.getCharAt(x) <= "9" THEN
 			LET l_gotNum = TRUE
 			CONTINUE FOR
@@ -257,7 +257,7 @@ FUNCTION glsec_fromBase64(l_str)
 		RETURN NULL
 	END IF
 	TRY
-		LET l_str = security.Base64.toString(l_str)
+		LET l_str = security.Base64.ToString(l_str)
 	CATCH
 		CALL gl_winMessage("Error", "Error in security module!\n" || SQLCA.SQLERRM, "exclamation")
 		LET l_str = NULL
@@ -277,7 +277,7 @@ FUNCTION glsec_toBase64(l_str)
 		RETURN NULL
 	END IF
 	TRY
-		LET l_str = security.Base64.fromString(l_str)
+		LET l_str = security.Base64.FromString(l_str)
 	CATCH
 		CALL gl_winMessage("Error", "Error in security module!\n" || SQLCA.SQLERRM, "exclamation")
 		LET l_str = NULL
@@ -384,13 +384,14 @@ END FUNCTION
 #+ @param l_pass - String - Password
 #+ @returns boolean
 FUNCTION glsec_updCreds(l_typ, l_user, l_pass)
-	DEFINE l_typ, l_user, l_pass, l_old_usr, l_old_pass STRING
-	DEFINE l_root                                       xml.DomNode
-	DEFINE enc                                          xml.Encryption
-	DEFINE symkey                                       xml.CryptoKey
-	DEFINE l_myKey                                      CHAR(32)
-	DEFINE l_dte                                        STRING
-	DEFINE l_tim                                        CHAR(5)
+	DEFINE l_typ, l_user, l_pass STRING
+	DEFINE l_old_usr, l_old_pass STRING
+	DEFINE l_root                xml.DomNode
+	DEFINE l_enc                 xml.Encryption
+	DEFINE l_symKey              xml.CryptoKey
+	DEFINE l_myKey               CHAR(32)
+	DEFINE l_dte                 STRING
+	DEFINE l_tim                 CHAR(5)
 
 	CALL glsec_getCreds(l_typ) RETURNING l_old_usr, l_old_pass
 
@@ -407,13 +408,13 @@ FUNCTION glsec_updCreds(l_typ, l_user, l_pass)
 			RETURN FALSE
 		END IF
 		# Create symmetric AES256 key for XML encryption purposes
-		LET symkey = xml.CryptoKey.Create("http://www.w3.org/2001/04/xmlenc#aes256-cbc")
-		CALL symkey.setKey(l_mykey)                      # password of 256 bits
-		CALL symKey.setFeature("KeyName", "MySecretKey") # Name the password in order to identify the key (Not mandatory)
+		LET l_symKey = xml.CryptoKey.Create("http://www.w3.org/2001/04/xmlenc#aes256-cbc")
+		CALL l_symKey.setKey(l_myKey)                      # password of 256 bits
+		CALL l_symKey.setFeature("KeyName", "MySecretKey") # Name the password in order to identify the key (Not mandatory)
 		# Encrypt the entire document
-		LET enc = xml.Encryption.Create()
-		CALL enc.setKey(symkey)         # Set the symmetric key to be used
-		CALL enc.encryptElement(l_root) # Encrypt
+		LET l_enc = xml.Encryption.Create()
+		CALL l_enc.setKey(l_symKey)       # Set the symmetric key to be used
+		CALL l_enc.encryptElement(l_root) # Encrypt
 		# Save encrypted document back to disk
 		CALL m_doc.save(m_file)
 	CATCH
