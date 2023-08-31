@@ -90,9 +90,11 @@
       <File filePath="src/lib_login.4gl"/>
       <File filePath="src/login.per"/>
     </Library>
+    <Library binaryName="lib_secrureFile" id="2081736582" label="lib_secrureFile">
+      <File filePath="lib_secureFile/lib_secureFile.4gl"/>
+    </Library>
     <Library binaryName="lib_security" dependencies="1986" id="14000" label="lib_security">
       <File filePath="src/lib_secure.4gl"/>
-      <File filePath="src/lib_secureFile.4gl"/>
     </Library>
     <Application binaryName="loginDemo" dependencies="14000,1986,1831529840,2084719298,1991845598" id="18736" label="loginDemo">
       <Configuration id="-380624883" label="loginDemo"/>
@@ -115,9 +117,9 @@
       <Configuration id="-1762088761" label="crypt"/>
       <File filePath="src/crypt.4gl"/>
     </Application>
-    <Application binaryName="crypt2" dependencies="14000" id="209893243" label="crypt2">
+    <Application binaryName="crypt2" dependencies="2081736582" id="209893243" label="crypt2">
       <Configuration id="-1429959221" label="crypt2"/>
-      <File filePath="src/crypt2.4gl"/>
+      <File filePath="lib_secureFile/crypt2.4gl"/>
     </Application>
     <Application binaryName="test" dependencies="14000" id="-448905380" label="test">
       <Configuration commandLineArguments="My.T3st.Passw0rd" id="601821008" label="test"/>
