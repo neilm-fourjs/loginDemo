@@ -27,20 +27,20 @@ The idea is all the passwords are stored in an encrypted .xml file that's read r
 
 ## Contents of this folder
 
-# README.md - this file
-# crypt2.4gl - Genero Source file to use the library to encrypt the .xml file
-# lib_secureFile.4gl - Genero Source file for the library.
-# Makefile - Make file compiling and generating the certificate if it's missing.
+* README.md - this file
+* crypt2.4gl - Genero Source file to use the library to encrypt the .xml file
+* lib_secureFile.4gl - Genero Source file for the library.
+* Makefile - Make file compiling and generating the certificate if it's missing.
 
 
 ## Encrypting the .xml file
 
 To encrypt the xml file you run the 'crypt2' program, this will use the following environment variables to find the required files:
 
-# PLAINFILE - plain text source .xml file with clear text passwords, the default file name is .creds.xml
-# SECUREFILE - This will be the encrypted version of the PLAINFILE, the default name is .credsEnc.xml
-# SECURECERT - This is certificate used to encrypt the xml file, default name is MyCert.crt
-# SECURECKEY - This is the associated certificate 'key' used to decrypt the xml file, default name is MyCert.key
+* PLAINFILE - plain text source .xml file with clear text passwords, the default file name is .creds.xml
+* SECUREFILE - This will be the encrypted version of the PLAINFILE, the default name is .credsEnc.xml
+* SECURECERT - This is certificate used to encrypt the xml file, default name is MyCert.crt
+* SECURECKEY - This is the associated certificate 'key' used to decrypt the xml file, default name is MyCert.key
 
 NOTE: only the SECUREFILE and the SECURECKEY are required at runtime to access the secure file.
 
